@@ -2,7 +2,7 @@ package controller
 
 import (
 	"fmt"
-	"github.com/RaymondCode/simple-demo/service/Impl"
+	"github.com/RaymondCode/simple-demo/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -17,7 +17,7 @@ type FeedResponse struct {
 // GET  /douyin/feed
 func Feed(c *gin.Context) {
 	//1.查询前30个video
-	rows := Impl.QueryAll()
+	rows := service.QueryAll()
 	if rows == nil {
 		c.JSON(http.StatusOK, FeedResponse{
 			Response: Response{StatusCode: 0, StatusMsg: "查询失败"},

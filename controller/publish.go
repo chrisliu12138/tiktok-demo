@@ -2,7 +2,7 @@ package controller
 
 import (
 	"fmt"
-	"github.com/RaymondCode/simple-demo/service/Impl"
+	"github.com/RaymondCode/simple-demo/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
@@ -54,7 +54,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 	//给video表添加一条记录，包括title  playUrl uerId等
-	var flag bool = Impl.Add(uint(user.Id), saveFile, "test")
+	var flag bool = service.Add(uint(user.Id), saveFile, "test")
 	if flag == true {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 0,
@@ -88,7 +88,7 @@ func PublishList(c *gin.Context) {
 	//鉴权成功往后走
 	user := usersLoginInfo[token] //获取token的用户
 	//2.根据用户id查询其所有Video
-	rows := Impl.Query(uint(user.Id))
+	rows := service.Query(uint(user.Id))
 	if rows == nil {
 		c.JSON(http.StatusOK, FeedResponse{
 			Response: Response{StatusCode: 0, StatusMsg: "查询失败"},
