@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/RaymondCode/simple-demo/entity"
-	"github.com/RaymondCode/simple-demo/service"
+	"github.com/RaymondCode/simple-demo/service/Impl"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -25,7 +25,7 @@ func Register(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 
-	userServiceImpl := service.UserServiceImpl{}
+	userServiceImpl := Impl.UserServiceImpl{}
 	user := userServiceImpl.GetTableUserByUserName(username)
 	if username == user.Name {
 		c.JSON(http.StatusOK, UserLoginResponse{
@@ -37,13 +37,13 @@ func Register(c *gin.Context) {
 	} else {
 		insertUser := entity.TableUser{
 			Name:     username,
-			Password: service.EnCoder(password),
+			Password: Impl.EnCoder(password),
 		}
 		if userServiceImpl.InsertTableUser(&insertUser) != true {
 			log.Println("Insert User Fail")
 		}
 		user := userServiceImpl.GetTableUserByUserName(username)
-		token := service.GenerateToken(username)
+		token := Impl.GenerateToken(username)
 		log.Println("当前用户注册的ID是 ", user.Id)
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0},
@@ -57,13 +57,13 @@ func Register(c *gin.Context) {
 func Login(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
-	encoderPassword := service.EnCoder(password)
+	encoderPassword := Impl.EnCoder(password)
 	log.Println("EncoderPassword is ", encoderPassword)
 
-	userServiceImpl := service.UserServiceImpl{}
+	userServiceImpl := Impl.UserServiceImpl{}
 	user := userServiceImpl.GetTableUserByUserName(username)
 	if encoderPassword == user.Password {
-		token := service.GenerateToken(username)
+		token := Impl.GenerateToken(username)
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0},
 			UserId:   user.Id,
@@ -84,7 +84,7 @@ func UserInfo(c *gin.Context) {
 	userId := c.Query("user_id")
 	id, _ := strconv.ParseInt(userId, 10, 64)
 
-	userServiceImpl := service.UserServiceImpl{}
+	userServiceImpl := Impl.UserServiceImpl{}
 	user, err := userServiceImpl.GetUserById(id)
 	if err != nil {
 		c.JSON(http.StatusOK, UserResponse{
