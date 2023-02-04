@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -11,8 +10,6 @@ import (
 )
 
 var Db *gorm.DB
-
-var RDB *redis.Client
 
 func Init() {
 	newLogger := logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), //io writer
@@ -30,16 +27,4 @@ func Init() {
 	if err != nil {
 		log.Panic("err:", err.Error())
 	}
-}
-
-func GetRedisTemplete() *redis.Client {
-	if RDB != nil {
-		return RDB
-	}
-	opt, err := redis.ParseURL("redis://1.117.88.168/:6379/0")
-	if err != nil {
-		panic(err)
-	}
-	rdb := redis.NewClient(opt)
-	return rdb
 }

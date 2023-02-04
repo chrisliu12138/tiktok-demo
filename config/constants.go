@@ -9,7 +9,3 @@ var ONE_HOUR = 60 * 60
 var ONE_DAY_HOUR = 60 * 60 * 24
 var ONE_MONUTH = 60 * 60 * 24 * 30
 var ONE_YEAR = 365 * 60 * 60 * 24
-
-//Redis的set前缀名
-const Vedio_like = "vedio_like_"
-const User_like = "user_like_"
