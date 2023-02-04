@@ -11,5 +11,5 @@ var ONE_MONUTH = 60 * 60 * 24 * 30
 var ONE_YEAR = 365 * 60 * 60 * 24
 
 //Redis的set前缀名
-const vedio_like = "vedio_like_"
-const user_like = "user_like_"
+const Vedio_like = "vedio_like_"
+const User_like = "user_like_"
