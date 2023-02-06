@@ -60,59 +60,59 @@ func (userServiceImpl *UserServiceImpl) InsertTableUser(tableUser *dao.TableUser
 	return true
 }
 
-// GetUserById 未登录情况下 根据user_id获得User对象
-func (userServiceImpl *UserServiceImpl) GetUserById(id int64) (User, error) {
-	user := User{
-		Id:            0,
-		Name:          "",
-		FollowCount:   0,
-		FollowerCount: 0,
-		IsFollow:      false,
-		//TotalFavorited: 0,
-		//FavoriteCount:  0,
-	}
-	tableUser, err := dao.GetTableUserById(id)
-	if err != nil {
-		log.Println("Err:", err.Error())
-		log.Println("User Not Found")
-		return user, err
-	}
-	log.Println("User Query Success")
-	// TODO 等待点赞服务和关注服务写完后 通过接口获取对应信息存放到tableUser中 最后并赋值到user对象中
-	user.Name = tableUser.Name
-	return user, nil
-}
+//// GetUserById 未登录情况下 根据user_id获得User对象
+//func (userServiceImpl *UserServiceImpl) GetUserById(id int64) (User, error) {
+//	user := User{
+//		Id:            0,
+//		Name:          "",
+//		FollowCount:   0,
+//		FollowerCount: 0,
+//		IsFollow:      false,
+//		//TotalFavorited: 0,
+//		//FavoriteCount:  0,
+//	}
+//	tableUser, err := dao.GetTableUserById(id)
+//	if err != nil {
+//		log.Println("Err:", err.Error())
+//		log.Println("User Not Found")
+//		return user, err
+//	}
+//	log.Println("User Query Success")
+//	// TODO 等待点赞服务和关注服务写完后 通过接口获取对应信息存放到tableUser中 最后并赋值到user对象中
+//	user.Name = tableUser.Name
+//	return user, nil
+//}
 
 // GetUserByIdWithCurId 已登录(curId)情况下 根据user_id获得User对象
-func (userServiceImpl *UserServiceImpl) GetUserByIdWithCurId(id int64, curId int64) (User, error) {
-	user := User{
-		Id:            0,
-		Name:          "",
-		FollowCount:   0,
-		FollowerCount: 0,
-		IsFollow:      false,
-		//TotalFavorited: 0,
-		//FavoriteCount:  0,
-	}
-	tableUser, err := dao.GetTableUserById(id)
-	if err != nil {
-		log.Println("Err:", err.Error())
-		log.Println("User Not Found")
-		return user, err
-	}
-	log.Println("User Query Success")
-	// TODO 等待点赞服务和关注服务写完后 通过接口获取对应信息存放到tableUser中 最后并赋值到user对象中
-	user.Name = tableUser.Name
-	return user, nil
-}
+//func (userServiceImpl *UserServiceImpl) GetUserByIdWithCurId(id int64, curId int64) (User, error) {
+//	user := User{
+//		Id:            0,
+//		Name:          "",
+//		FollowCount:   0,
+//		FollowerCount: 0,
+//		IsFollow:      false,
+//		//TotalFavorited: 0,
+//		//FavoriteCount:  0,
+//	}
+//	tableUser, err := dao.GetTableUserById(id)
+//	if err != nil {
+//		log.Println("Err:", err.Error())
+//		log.Println("User Not Found")
+//		return user, err
+//	}
+//	log.Println("User Query Success")
+//	// TODO 等待点赞服务和关注服务写完后 通过接口获取对应信息存放到tableUser中 最后并赋值到user对象中
+//	user.Name = tableUser.Name
+//	return user, nil
+//}
 
-// GenerateToken 根据userName生成一个token
-func GenerateToken(userName string) string {
-	user := UserService.GetTableUserByUserName(new(UserServiceImpl), userName)
-	token := NewToken(user)
-	log.Printf("GenerateToken: %v\n\n", token)
-	return token
-}
+//// GenerateToken 根据userName生成一个token
+//func GenerateToken(userName string) string {
+//	user := UserService.GetTableUserByUserName(new(UserServiceImpl), userName)
+//	token := NewToken(user)
+//	log.Printf("GenerateToken: %v\n\n", token)
+//	return token
+//}
 
 // NewToken 根据信息创建Token
 func NewToken(user dao.TableUser) string {

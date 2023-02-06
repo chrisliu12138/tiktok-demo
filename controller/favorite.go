@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/RaymondCode/simple-demo/dao"
 	"github.com/RaymondCode/simple-demo/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -16,9 +17,9 @@ func FavoriteAction(c *gin.Context) {
 		like = service.Like(userid, vedioId)
 	}
 	if like == 1 {
-		c.JSON(http.StatusOK, Response{StatusCode: 0})
+		c.JSON(http.StatusOK, dao.Response{StatusCode: 0})
 	} else {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "点赞失败"})
+		c.JSON(http.StatusOK, dao.Response{StatusCode: 1, StatusMsg: "点赞失败"})
 	}
 }
 
@@ -29,7 +30,7 @@ func FavoriteList(c *gin.Context) {
 
 	Videoslist := service.GetVedioLikeList(userid)
 	c.JSON(http.StatusOK, VideoListResponse{
-		Response: Response{
+		Response: dao.Response{
 			StatusCode: 0,
 		},
 		VideoList: Videoslist,
