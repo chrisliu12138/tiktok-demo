@@ -32,11 +32,12 @@ func InitMysqlTemplete() {
 }
 
 func InitRedisTemplete() {
-	opt, err := redis.ParseURL("redis://1.117.88.168/:6379/0")
-	if err != nil {
-		panic(err)
-	}
-	RDB = redis.NewClient(opt)
+	RDB = redis.NewClient(&redis.Options{
+		Addr:     "1.117.88.168:6379",
+		Password: "123321", // 密码
+		DB:       0,        // 数据库，从0开始
+		PoolSize: 30,       // 连接池大小
+	})
 }
 
 func Init() {

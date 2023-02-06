@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/RaymondCode/simple-demo/controller"
 	"github.com/RaymondCode/simple-demo/dao"
 )
 
@@ -37,8 +36,8 @@ type UserService interface {
 	*/
 
 	// GetUserById 未登录情况下 根据user_id获得User对象
-	GetUserById(id int64) (controller.User, error)
+	GetUserById(id int64) (dao.User, error)
 
 	// GetUserByIdWithCurId 已登录(curId)情况下 根据user_id获得User对象
-	GetUserByIdWithCurId(id int64, curId int64) (controller.User, error)
+	GetUserByIdWithCurId(id int64, curId int64) (dao.User, error)
 }

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/RaymondCode/simple-demo/dao"
 	"github.com/RaymondCode/simple-demo/service/impl"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -9,8 +10,8 @@ import (
 )
 
 type VideoListResponse struct {
-	Response
-	VideoList []Video `json:"video_list"`
+	dao.Response
+	VideoList []dao.Video `json:"video_list"`
 }
 
 // demo鉴权
@@ -29,13 +30,13 @@ func Publish(c *gin.Context) {
 	token := c.PostForm("token")
 	//鉴权  默认存在 token =zhangleidouyin
 	if _, exist := usersLoginInfo[token]; !exist {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		c.JSON(http.StatusOK, dao.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
 	//是否传过来视频数据
 	data, err := c.FormFile("data")
 	if err != nil {
-		c.JSON(http.StatusOK, Response{
+		c.JSON(http.StatusOK, dao.Response{
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
 		})
@@ -47,7 +48,7 @@ func Publish(c *gin.Context) {
 	finalName := fmt.Sprintf("%d_%s", user.Id, filename) //存的文件名字
 	var saveFile = filepath.Join("./public/", finalName) //文件路径
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
-		c.JSON(http.StatusOK, Response{
+		c.JSON(http.StatusOK, dao.Response{
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
 		})
@@ -56,12 +57,12 @@ func Publish(c *gin.Context) {
 	//给video表添加一条记录，包括title  playUrl uerId等
 	var flag bool = impl.Add(uint(user.Id), saveFile, "test")
 	if flag == true {
-		c.JSON(http.StatusOK, Response{
+		c.JSON(http.StatusOK, dao.Response{
 			StatusCode: 0,
 			StatusMsg:  finalName + " uploaded successfully",
 		})
 	} else {
-		c.JSON(http.StatusOK, Response{
+		c.JSON(http.StatusOK, dao.Response{
 			StatusCode: 0,
 			StatusMsg:  finalName + " uploaded failed",
 		})
@@ -78,7 +79,7 @@ func PublishList(c *gin.Context) {
 	//鉴权  默认存在 token =zhangleidouyin
 	if _, exist := usersLoginInfo[token]; !exist {
 		c.JSON(http.StatusOK, VideoListResponse{
-			Response: Response{
+			Response: dao.Response{
 				StatusCode: 0,
 				StatusMsg:  "请先登录",
 			},
@@ -91,16 +92,16 @@ func PublishList(c *gin.Context) {
 	rows := impl.Query(uint(user.Id))
 	if rows == nil {
 		c.JSON(http.StatusOK, FeedResponse{
-			Response: Response{StatusCode: 0, StatusMsg: "查询失败"},
+			Response: dao.Response{StatusCode: 0, StatusMsg: "查询失败"},
 		})
 	}
 	var length int = len(rows)
 	//2.查询成功则封装Response
-	var videoList [30]Video
+	var videoList [30]dao.Video
 	for i := 0; i < length; i++ {
 		fmt.Println(rows[i])
-		var author User
-		author = User{
+		var author dao.User
+		author = dao.User{
 			Id:            int64(rows[i].UserID),
 			Name:          rows[i].Name,
 			FollowCount:   int64(rows[i].FollowCount),
@@ -120,7 +121,7 @@ func PublishList(c *gin.Context) {
 	}
 	//3.把封装的结果返回给前端
 	c.JSON(http.StatusOK, FeedResponse{
-		Response:  Response{StatusCode: 1, StatusMsg: "查询成功"},
+		Response:  dao.Response{StatusCode: 1, StatusMsg: "查询成功"},
 		VideoList: videoList,
 	})
 
