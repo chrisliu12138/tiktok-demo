@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/RaymondCode/simple-demo/controller"
-	"github.com/RaymondCode/simple-demo/entity"
+	"github.com/RaymondCode/simple-demo/dao"
 )
 
 // User controller进行最终封装返回的User用户结构体
@@ -21,16 +21,16 @@ type UserService interface {
 		本地调用API
 	*/
 	// GetTableUserList 获得全部TableUser对象
-	GetTableUserList() []entity.TableUser
+	GetTableUserList() []dao.TableUser
 
 	// GetTableUserByUserName 根据UserName获得TableUser对象
-	GetTableUserByUserName(name string) entity.TableUser
+	GetTableUserByUserName(name string) dao.TableUser
 
 	// GetTableUserById 根据user_id获得TableUser对象
-	GetTableUserById(id int64) entity.TableUser
+	GetTableUserById(id int64) dao.TableUser
 
 	// InsertTableUser 将tableUser对象插入表内
-	InsertTableUser(tableUser *entity.TableUser) bool
+	InsertTableUser(tableUser *dao.TableUser) bool
 
 	/*
 		向外暴露API

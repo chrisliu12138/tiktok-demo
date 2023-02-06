@@ -1,9 +1,11 @@
 package controller
 
 import (
-<<<<<<< HEAD
+	"github.com/RaymondCode/simple-demo/service"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"strconv"
 	"sync/atomic"
 )
 
@@ -22,16 +24,6 @@ var usersLoginInfo = map[string]User{
 
 var userIdSequence = int64(1)
 
-=======
-	"github.com/RaymondCode/simple-demo/entity"
-	"github.com/RaymondCode/simple-demo/service"
-	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
-	"strconv"
-)
-
->>>>>>> master
 type UserLoginResponse struct {
 	Response
 	UserId int64  `json:"user_id,omitempty"`
@@ -43,15 +35,11 @@ type UserResponse struct {
 	User User `json:"user"`
 }
 
-<<<<<<< HEAD
-=======
 // Register POST /douyin/user/register/ 用户注册
->>>>>>> master
 func Register(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 
-<<<<<<< HEAD
 	token := username + password
 
 	if _, exist := usersLoginInfo[token]; exist {
@@ -69,7 +57,7 @@ func Register(c *gin.Context) {
 			Response: Response{StatusCode: 0},
 			UserId:   userIdSequence,
 			Token:    username + password,
-=======
+
 	userServiceImpl := service.UserServiceImpl{}
 	user := userServiceImpl.GetTableUserByUserName(username)
 	if username == user.Name {
@@ -94,12 +82,10 @@ func Register(c *gin.Context) {
 			Response: Response{StatusCode: 0},
 			UserId:   user.Id,
 			Token:    token,
->>>>>>> master
 		})
 	}
 }
 
-<<<<<<< HEAD
 func Login(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
@@ -107,7 +93,7 @@ func Login(c *gin.Context) {
 	token := username + password
 
 	if user, exist := usersLoginInfo[token]; exist {
-=======
+
 // Login POST /douyin/user/login/ 用户登录
 func Login(c *gin.Context) {
 	username := c.Query("username")
@@ -119,7 +105,7 @@ func Login(c *gin.Context) {
 	user := userServiceImpl.GetTableUserByUserName(username)
 	if encoderPassword == user.Password {
 		token := service.GenerateToken(username)
->>>>>>> master
+
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0},
 			UserId:   user.Id,
@@ -127,24 +113,24 @@ func Login(c *gin.Context) {
 		})
 	} else {
 		c.JSON(http.StatusOK, UserLoginResponse{
-<<<<<<< HEAD
+
 			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-=======
+
 			Response: Response{
 				StatusCode: 1,
 				StatusMsg:  "Username or Password Error",
 			},
->>>>>>> master
+
 		})
 	}
 }
 
-<<<<<<< HEAD
+
 func UserInfo(c *gin.Context) {
 	token := c.Query("token")
 
 	if user, exist := usersLoginInfo[token]; exist {
-=======
+
 // UserInfo GET /douyin/user/ 用户信息
 func UserInfo(c *gin.Context) {
 	userId := c.Query("user_id")

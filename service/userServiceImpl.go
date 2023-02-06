@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"github.com/RaymondCode/simple-demo/config"
-	"github.com/RaymondCode/simple-demo/entity"
+	"github.com/RaymondCode/simple-demo/dao"
 	"github.com/dgrijalva/jwt-go"
 	"log"
 	"strconv"
@@ -21,8 +21,8 @@ type UserServiceImpl struct {
 }
 
 // GetTableUserList 获得全部TableUser对象
-func (userServiceImpl *UserServiceImpl) GetTableUserList() []entity.TableUser {
-	tableUsers, err := entity.GetTableUserList()
+func (userServiceImpl *UserServiceImpl) GetTableUserList() []dao.TableUser {
+	tableUsers, err := dao.GetTableUserList()
 	if err != nil {
 		log.Println("Err:", err.Error())
 		return tableUsers
@@ -31,8 +31,8 @@ func (userServiceImpl *UserServiceImpl) GetTableUserList() []entity.TableUser {
 }
 
 // GetTableUserByUserName 根据UserName获得TableUser对象
-func (userServiceImpl *UserServiceImpl) GetTableUserByUserName(name string) entity.TableUser {
-	tableUser, err := entity.GetTableUserByUserName(name)
+func (userServiceImpl *UserServiceImpl) GetTableUserByUserName(name string) dao.TableUser {
+	tableUser, err := dao.GetTableUserByUserName(name)
 	if err != nil {
 		log.Println("Err:", err.Error())
 		return tableUser
@@ -41,8 +41,8 @@ func (userServiceImpl *UserServiceImpl) GetTableUserByUserName(name string) enti
 }
 
 // GetTableUserById 根据user_id获得TableUser对象
-func (userServiceImpl *UserServiceImpl) GetTableUserById(id int64) entity.TableUser {
-	tableUser, err := entity.GetTableUserById(id)
+func (userServiceImpl *UserServiceImpl) GetTableUserById(id int64) dao.TableUser {
+	tableUser, err := dao.GetTableUserById(id)
 	if err != nil {
 		log.Println("Err:", err.Error())
 		return tableUser
@@ -51,8 +51,8 @@ func (userServiceImpl *UserServiceImpl) GetTableUserById(id int64) entity.TableU
 }
 
 // InsertTableUser 将tableUser对象插入表内
-func (userServiceImpl *UserServiceImpl) InsertTableUser(tableUser *entity.TableUser) bool {
-	flag := entity.InsertTableUser(tableUser)
+func (userServiceImpl *UserServiceImpl) InsertTableUser(tableUser *dao.TableUser) bool {
+	flag := dao.InsertTableUser(tableUser)
 	if flag == false {
 		log.Println("新增用户插入失败")
 		return false
@@ -71,7 +71,7 @@ func (userServiceImpl *UserServiceImpl) GetUserById(id int64) (User, error) {
 		//TotalFavorited: 0,
 		//FavoriteCount:  0,
 	}
-	tableUser, err := entity.GetTableUserById(id)
+	tableUser, err := dao.GetTableUserById(id)
 	if err != nil {
 		log.Println("Err:", err.Error())
 		log.Println("User Not Found")
@@ -94,7 +94,7 @@ func (userServiceImpl *UserServiceImpl) GetUserByIdWithCurId(id int64, curId int
 		//TotalFavorited: 0,
 		//FavoriteCount:  0,
 	}
-	tableUser, err := entity.GetTableUserById(id)
+	tableUser, err := dao.GetTableUserById(id)
 	if err != nil {
 		log.Println("Err:", err.Error())
 		log.Println("User Not Found")
@@ -115,7 +115,7 @@ func GenerateToken(userName string) string {
 }
 
 // NewToken 根据信息创建Token
-func NewToken(user entity.TableUser) string {
+func NewToken(user dao.TableUser) string {
 	expireTime := time.Now().Unix() + int64(config.ONE_DAY_HOUR)
 	log.Printf("ExpireTime is %v\n\n", expireTime)
 	claims := jwt.StandardClaims{
