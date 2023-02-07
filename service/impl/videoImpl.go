@@ -88,6 +88,7 @@ func Query(userId uint) []Result {
 	//查询某个用户的所有视频
 	//rows := make([]*Result, 0)
 	var rows []Result
+	//连接数据库并查询
 	// SELECT * FROM `video` left join user on user.id = video.user_id where user_id = usrId;
 	result := Utils.DB.Model(&Video{}).Joins("left join user on user.id = video.user_id").Where("user_id like", userId).Scan(&rows)
 	if result.Error != nil {
@@ -104,6 +105,7 @@ func Query(userId uint) []Result {
 func QueryListByVedionl(videoArray []int64) []Result {
 	//rows := make([]*Result, 0)
 	var rows []Result
+	//连接数据库并查询
 	// SELECT * FROM `video` left join user on user.id = video.user_id where video.id = ID;
 	result := Utils.DB.Model(&Video{}).
 		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user_id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Where(videoArray).Scan(&rows)
@@ -120,6 +122,7 @@ func QueryAll() []Result {
 	//查询最新的30条数据
 	//rows := make([]*Result, 0)
 	var rows []Result
+	//连接数据库并查询
 	// SELECT * FROM `video` left join user on user.id = video.user_id ORDER BY create_time desc  LIMIT 30;
 	result := Utils.DB.Model(&Video{}).
 		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user_id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Order("video.create_time desc").Limit(30).Scan(&rows)
