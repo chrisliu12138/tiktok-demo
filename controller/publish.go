@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
+	"strconv"
 )
 
 type VideoListResponse struct {
@@ -14,25 +15,8 @@ type VideoListResponse struct {
 	VideoList []dao.Video `json:"video_list"`
 }
 
-// demo鉴权
-var usersLoginInfo = map[string]User{
-	"zhangleidouyin": {
-		Id:            1,
-		Name:          "zhanglei",
-		FollowCount:   10,
-		FollowerCount: 5,
-		IsFollow:      1,
-	},
-}
-
 // POST /douyin/publish/action
 func Publish(c *gin.Context) {
-	token := c.PostForm("token")
-	//鉴权  默认存在 token =zhangleidouyin
-	if _, exist := usersLoginInfo[token]; !exist {
-		c.JSON(http.StatusOK, dao.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
-		return
-	}
 	//是否传过来视频数据
 	data, err := c.FormFile("data")
 	if err != nil {
@@ -44,7 +28,17 @@ func Publish(c *gin.Context) {
 	}
 
 	filename := filepath.Base(data.Filename)
-	user := usersLoginInfo[token]                        //获取token的用户
+	//获取登录用户
+	userId, err := strconv.ParseInt(c.Query("userId"), 10, 64)
+	if err != nil {
+		panic("字符型转整型失败")
+	}
+
+	user, err := dao.GetTableUserById(userId)
+	if err != nil {
+		panic("根据userId查询用户失败")
+	}
+	//获取token的用户
 	finalName := fmt.Sprintf("%d_%s", user.Id, filename) //存的文件名字
 	var saveFile = filepath.Join("./public/", finalName) //文件路径
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
@@ -72,22 +66,16 @@ func Publish(c *gin.Context) {
 
 // GET /douyin/publish/list
 func PublishList(c *gin.Context) {
-	//1.鉴权
-
-	//a.鉴权失败
-	token := c.PostForm("token")
-	//鉴权  默认存在 token =zhangleidouyin
-	if _, exist := usersLoginInfo[token]; !exist {
-		c.JSON(http.StatusOK, VideoListResponse{
-			Response: dao.Response{
-				StatusCode: 0,
-				StatusMsg:  "请先登录",
-			},
-		})
-		return
+	//获取登录用户
+	userId, err := strconv.ParseInt(c.Query("userId"), 10, 64)
+	if err != nil {
+		panic("字符型转整型失败")
 	}
-	//鉴权成功往后走
-	user := usersLoginInfo[token] //获取token的用户
+
+	user, err := dao.GetTableUserById(userId)
+	if err != nil {
+		panic("根据userId查询用户失败")
+	}
 	//2.根据用户id查询其所有Video
 	rows := impl.Query(uint(user.Id))
 	if rows == nil {

@@ -16,8 +16,7 @@ func TestQueryListByVedionl(t *testing.T) {
 }
 
 func TestQuery(t *testing.T) {
-
-	result := impl.QueryListByVedionl([]int64{1, 2, 3, 4})
+	result := impl.Query(5)
 	if result == nil {
 		t.Error("测试失败")
 	}
