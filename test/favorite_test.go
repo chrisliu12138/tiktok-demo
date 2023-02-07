@@ -47,3 +47,14 @@ func BenchmarkDislikeVedio(b *testing.B) {
 	result := service.DislikeVedio("11", "15")
 	fmt.Println(result)
 }
+
+func TestTimeClock(t *testing.T) {
+	Utils.InitRedisTemplete()
+	Utils.TimeMission()
+	rand.Seed(time.Now().UnixNano())
+	for i := 0; i < 10; i++ {
+		num := rand.Int63n(30)
+		fmt.Println(num)
+	}
+
+}

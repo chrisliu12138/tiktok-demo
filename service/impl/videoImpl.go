@@ -118,7 +118,7 @@ func QueryListByVedionl(ID uint) []Result {
 	var rows []Result
 	// SELECT * FROM `video` left join user on user.id = video.user_id where video.id = ID;
 	result := db.Model(&Video{}).
-		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user_id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Where(Where("video.id like", ID)).Scan(&rows)
+		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user_id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Where("Where video.id like", ID).Scan(&rows)
 	if result.Error != nil {
 		return nil //查询失败
 	}
