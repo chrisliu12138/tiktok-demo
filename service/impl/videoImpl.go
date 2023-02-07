@@ -2,6 +2,7 @@ package impl
 
 import (
 	"fmt"
+	"github.com/RaymondCode/simple-demo/Utils"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -105,20 +106,16 @@ func Query(userId uint) []Result {
 
 }
 
-// 根据videoID查询稿件
-func QueryListByVedionl(ID uint) []Result {
+// 根据videoArray查询稿件
+func QueryListByVedionl(videoArray []int64) []Result {
 
-	//连接数据库
-	db, err := gorm.Open(mysql.Open("root:root@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local"))
-	if err != nil {
-		panic("failed to connect database")
-	}
-	//查询videoID为ID的稿件
+	//查询videoArray为ID的稿件
 	//rows := make([]*Result, 0)
 	var rows []Result
 	// SELECT * FROM `video` left join user on user.id = video.user_id where video.id = ID;
-	result := db.Model(&Video{}).
-		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user_id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Where("Where video.id like", ID).Scan(&rows)
+	result := Utils.DB.Model(&Video{}).
+		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user_id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Where(videoArray).Scan(&rows)
+
 	if result.Error != nil {
 		return nil //查询失败
 	}
