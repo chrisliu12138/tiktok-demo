@@ -7,23 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"sync/atomic"
 )
-
-// usersLoginInfo use map to store user info, and key is username+password for demo
-// user data will be cleared every time the server starts
-// test data: username=zhanglei, password=douyin
-var usersLoginInfo = map[string]dao.User{
-	"zhangleidouyin": {
-		Id:            1,
-		Name:          "zhanglei",
-		FollowCount:   10,
-		FollowerCount: 5,
-		IsFollow:      true,
-	},
-}
-
-var userIdSequence = int64(1)
 
 type UserLoginResponse struct {
 	dao.Response
@@ -41,59 +25,33 @@ func Register(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 
-	token := username + password
-
-	if _, exist := usersLoginInfo[token]; exist {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: dao.Response{StatusCode: 1, StatusMsg: "User already exist"},
-		})
-	} else {
-		atomic.AddInt64(&userIdSequence, 1)
-		newUser := dao.User{
-			Id:   userIdSequence,
-			Name: username,
-		}
-		usersLoginInfo[token] = newUser
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: dao.Response{StatusCode: 0},
-			UserId:   userIdSequence,
-			Token:    username + password,
-
 	userServiceImpl := service.UserServiceImpl{}
-	user := userServiceImpl.GetTableUserByUserName(username)
+	user := userServiceImpl.GetTableUserByUsername(username)
 	if username == user.Name {
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{
+			Response: dao.Response{
 				StatusCode: 1,
 				StatusMsg:  "User already exist",
 			},
 		})
 	} else {
-		insertUser := entity.TableUser{
+		insertUser := dao.TableUser{
 			Name:     username,
 			Password: service.EnCoder(password),
 		}
 		if userServiceImpl.InsertTableUser(&insertUser) != true {
 			log.Println("Insert User Fail")
 		}
-		user := userServiceImpl.GetTableUserByUserName(username)
+		user := userServiceImpl.GetTableUserByUsername(username)
 		token := service.GenerateToken(username)
 		log.Println("当前用户注册的ID是 ", user.Id)
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 0},
+			Response: dao.Response{StatusCode: 0},
 			UserId:   user.Id,
 			Token:    token,
 		})
 	}
 }
-
-func Login(c *gin.Context) {
-	username := c.Query("username")
-	password := c.Query("password")
-
-	token := username + password
-
-	if user, exist := usersLoginInfo[token]; exist {
 
 // Login POST /douyin/user/login/ 用户登录
 func Login(c *gin.Context) {
@@ -103,10 +61,9 @@ func Login(c *gin.Context) {
 	log.Println("EncoderPassword is ", encoderPassword)
 
 	userServiceImpl := service.UserServiceImpl{}
-	user := userServiceImpl.GetTableUserByUserName(username)
+	user := userServiceImpl.GetTableUserByUsername(username)
 	if encoderPassword == user.Password {
 		token := service.GenerateToken(username)
-
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: dao.Response{StatusCode: 0},
 			UserId:   user.Id,
@@ -114,23 +71,13 @@ func Login(c *gin.Context) {
 		})
 	} else {
 		c.JSON(http.StatusOK, UserLoginResponse{
-
-			Response: dao.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-
 			Response: dao.Response{
 				StatusCode: 1,
 				StatusMsg:  "Username or Password Error",
 			},
-
 		})
 	}
 }
-
-
-func UserInfo(c *gin.Context) {
-	token := c.Query("token")
-
-	if user, exist := usersLoginInfo[token]; exist {
 
 // UserInfo GET /douyin/user/ 用户信息
 func UserInfo(c *gin.Context) {
@@ -147,16 +94,9 @@ func UserInfo(c *gin.Context) {
 			},
 		})
 	} else {
-
 		c.JSON(http.StatusOK, UserResponse{
 			Response: dao.Response{StatusCode: 0},
 			User:     user,
 		})
-
-	} else {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: dao.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-		})
-
 	}
 }
