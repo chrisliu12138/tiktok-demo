@@ -30,8 +30,8 @@ func (userServiceImpl *UserServiceImpl) GetTableUserList() []dao.TableUser {
 	return tableUsers
 }
 
-// GetTableUserByUserName 根据UserName获得TableUser对象
-func (userServiceImpl *UserServiceImpl) GetTableUserByUserName(name string) dao.TableUser {
+// GetTableUserByUsername 根据Username获得TableUser对象
+func (userServiceImpl *UserServiceImpl) GetTableUserByUsername(name string) dao.TableUser {
 	tableUser, err := dao.GetTableUserByUserName(name)
 	if err != nil {
 		log.Println("Err:", err.Error())
@@ -67,7 +67,7 @@ func (userServiceImpl *UserServiceImpl) GetUserById(id int64) (dao.User, error) 
 		Name:          "",
 		FollowCount:   0,
 		FollowerCount: 0,
-		IsFollow:      false,
+		IsFollow:      0,
 		//TotalFavorited: 0,
 		//FavoriteCount:  0,
 	}
@@ -90,7 +90,7 @@ func (userServiceImpl *UserServiceImpl) GetUserByIdWithCurId(id int64, curId int
 		Name:          "",
 		FollowCount:   0,
 		FollowerCount: 0,
-		IsFollow:      false,
+		IsFollow:      0,
 		//TotalFavorited: 0,
 		//FavoriteCount:  0,
 	}
@@ -108,7 +108,7 @@ func (userServiceImpl *UserServiceImpl) GetUserByIdWithCurId(id int64, curId int
 
 // GenerateToken 根据userName生成一个token
 func GenerateToken(userName string) string {
-	user := UserService.GetTableUserByUserName(new(UserServiceImpl), userName)
+	user := UserService.GetTableUserByUsername(new(UserServiceImpl), userName)
 	token := NewToken(user)
 	log.Printf("GenerateToken: %v\n\n", token)
 	return token

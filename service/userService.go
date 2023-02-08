@@ -22,8 +22,8 @@ type UserService interface {
 	// GetTableUserList 获得全部TableUser对象
 	GetTableUserList() []dao.TableUser
 
-	// GetTableUserByUserName 根据UserName获得TableUser对象
-	GetTableUserByUserName(name string) dao.TableUser
+	// GetTableUserByUsername 根据UserName获得TableUser对象
+	GetTableUserByUsername(name string) dao.TableUser
 
 	// GetTableUserById 根据user_id获得TableUser对象
 	GetTableUserById(id int64) dao.TableUser
