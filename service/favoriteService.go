@@ -78,6 +78,9 @@ func Add(vedioId, userId string) int64 {
 	return result
 }
 
+/*
+测试用，为redis添加数据
+*/
 func AdduserId(userId, vedioId string) int64 {
 	ctx := context.Background()
 	result, err := Utils.RDB.SAdd(ctx, User_like+userId, vedioId).Result()

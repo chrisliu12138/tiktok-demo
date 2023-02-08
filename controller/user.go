@@ -147,17 +147,16 @@ func UserInfo(c *gin.Context) {
 			},
 		})
 	} else {
->>>>>>> master
+
 		c.JSON(http.StatusOK, UserResponse{
 			Response: dao.Response{StatusCode: 0},
 			User:     user,
 		})
-<<<<<<< HEAD
+
 	} else {
 		c.JSON(http.StatusOK, UserResponse{
 			Response: dao.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
 		})
-=======
->>>>>>> master
+
 	}
 }
