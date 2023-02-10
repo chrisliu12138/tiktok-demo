@@ -1,37 +1,42 @@
 package service
 
 import (
-	"container/list"
 	"context"
-	"fmt"
 	"github.com/RaymondCode/simple-demo/Utils"
+	"github.com/RaymondCode/simple-demo/service/impl"
+	"strconv"
 
 	"github.com/RaymondCode/simple-demo/config"
-	"github.com/RaymondCode/simple-demo/dao"
 )
+
+var Vedio_like = config.Vedio_like
+var User_like = config.User_like
 
 /*
 返回当前用户的所有点赞视频列表
 */
-var Vedio_like = config.Vedio_like
-var User_like = config.User_like
-
-func GetVedioLikeList(userId string) []dao.Video {
-	resultList := list.List{}
+func GetVedioLikeList(userId string) []impl.Result {
+	var IdList []int64
 	ctx := context.Background()
 	result, err := Utils.RDB.SMembers(ctx, User_like+userId).Result()
 	if err != nil {
 		panic(err)
 	}
-	for _, s := range result {
-		resultList.PushFront(s)
-	}
-	for i := 0; i < resultList.Len(); i++ {
-		back := resultList.Back()
-		fmt.Println(back)
+	for i, s := range result {
+		IdList[i], err = strconv.ParseInt(s, 10, 64)
 	}
 	//调用service方法
-	return nil
+	//vedioList := []dao.Video
+	results := impl.QueryListByVedionl(IdList)
+	//UuserServiceImpl := UserServiceImpl{}
+	//for _, r := range results {
+	//	vedio := dao.Video{
+	//		Id: int64(r.ID),
+	//		Author:
+	//	}
+	//
+	//}
+	return results
 }
 
 /*
@@ -45,7 +50,6 @@ func GetVedioLikeCount(vedioId string) int64 {
 		panic(err)
 	}
 	count = result
-	fmt.Print(count)
 	return count
 }
 
