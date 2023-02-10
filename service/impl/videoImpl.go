@@ -2,7 +2,6 @@ package impl
 
 import (
 	"fmt"
-	"github.com/RaymondCode/simple-demo/Utils"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -84,19 +83,37 @@ func Add(uerId uint, playUrl string, title string) bool {
 }
 
 // 根据userID查询稿件
-func Query(userId uint) []Result {
+func Query(userid uint) []Result {
 	//查询某个用户的所有视频
 	//rows := make([]*Result, 0)
 	var rows []Result
 	//连接数据库并查询
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold: 2 * time.Second, // 慢 SQL 阈值
+			LogLevel:      logger.Info,     // Log level
+			Colorful:      true,            // 彩色打印
+		},
+	)
+	dsn := fmt.Sprintf("tiktok:tiktok123@tcp(1.117.88.168:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local")
+	//连接数据库
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger:                                   newLogger,
+		SkipDefaultTransaction:                   true,
+		PrepareStmt:                              true,
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
+	if err != nil {
+		panic("failed to connect database")
+	}
+	//连接数据库并查询
 	// SELECT * FROM `video` left join user on user.id = video.user_id where user_id = usrId;
-	result := Utils.DB.Model(&Video{}).Joins("left join user on user.id = video.user_id").Where("user_id like", userId).Scan(&rows)
+	result := db.Model(&Video{}).
+		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user.id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Where("user.id = ?", userid).Scan(&rows)
 	if result.Error != nil {
 		return nil //查询失败
 	}
-
-	fmt.Println(result.Error)
-	fmt.Println(result.RowsAffected)
 	return rows
 
 }
@@ -106,8 +123,27 @@ func QueryListByVedionl(videoArray []int64) []Result {
 	//rows := make([]*Result, 0)
 	var rows []Result
 	//连接数据库并查询
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold: 2 * time.Second, // 慢 SQL 阈值
+			LogLevel:      logger.Info,     // Log level
+			Colorful:      true,            // 彩色打印
+		},
+	)
+	dsn := fmt.Sprintf("tiktok:tiktok123@tcp(1.117.88.168:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local")
+	//连接数据库
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger:                                   newLogger,
+		SkipDefaultTransaction:                   true,
+		PrepareStmt:                              true,
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
+	if err != nil {
+		panic("failed to connect database")
+	}
 	// SELECT * FROM `video` left join user on user.id = video.user_id where video.id = ID;
-	result := Utils.DB.Model(&Video{}).
+	result := db.Model(&Video{}).
 		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user_id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Where(videoArray).Scan(&rows)
 
 	if result.Error != nil {
@@ -123,15 +159,31 @@ func QueryAll() []Result {
 	//rows := make([]*Result, 0)
 	var rows []Result
 	//连接数据库并查询
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold: 2 * time.Second, // 慢 SQL 阈值
+			LogLevel:      logger.Info,     // Log level
+			Colorful:      true,            // 彩色打印
+		},
+	)
+	dsn := fmt.Sprintf("tiktok:tiktok123@tcp(1.117.88.168:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local")
+	//连接数据库
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger:                                   newLogger,
+		SkipDefaultTransaction:                   true,
+		PrepareStmt:                              true,
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
+	if err != nil {
+		panic("failed to connect database")
+	}
+	//连接数据库并查询
 	// SELECT * FROM `video` left join user on user.id = video.user_id ORDER BY create_time desc  LIMIT 30;
-	result := Utils.DB.Model(&Video{}).
+	result := db.Model(&Video{}).
 		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user_id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Order("video.create_time desc").Limit(30).Scan(&rows)
 	if result.Error != nil {
 		return nil //查询失败
 	}
 	return rows
-	//fmt.Println(videos)
-	//fmt.Println(result.Error)
-	//fmt.Println(result.RowsAffected)
-
 }

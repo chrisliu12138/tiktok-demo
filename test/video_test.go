@@ -16,7 +16,15 @@ func TestQueryListByVedionl(t *testing.T) {
 }
 
 func TestQuery(t *testing.T) {
-	result := impl.Query(5)
+	result := impl.Query(8)
+	if result == nil {
+		t.Error("测试失败")
+	}
+	t.Logf("测试成功")
+
+}
+func TestQueryAll(t *testing.T) {
+	result := impl.QueryAll()
 	if result == nil {
 		t.Error("测试失败")
 	}
