@@ -39,6 +39,13 @@ func GetVedioLikeList(userId string) []impl.Result {
 	return results
 }
 
+//
+func LimitIP(ip, vedioId string) bool {
+	ctx := context.Background()
+	Utils.RDB.SCard(ctx, Vedio_like+vedioId).Result()
+	return true
+}
+
 /*
 返回当前视频的点赞总数，视频不存在则返回0
 */

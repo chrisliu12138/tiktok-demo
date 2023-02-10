@@ -12,6 +12,10 @@ import (
 func FavoriteAction(c *gin.Context) {
 	userid := c.Query("userId")
 	vedioId := c.Query("vedioId")
+
+	ip := c.ClientIP()
+	service.LimitIP(ip, vedioId)
+
 	var like = 0
 	if userid != "" && vedioId != "" {
 		like = service.Like(userid, vedioId)
