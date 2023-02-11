@@ -68,8 +68,6 @@ func (userServiceImpl *UserServiceImpl) GetUserById(id int64) (dao.User, error) 
 		FollowCount:   0,
 		FollowerCount: 0,
 		IsFollow:      0,
-		//TotalFavorited: 0,
-		//FavoriteCount:  0,
 	}
 	tableUser, err := dao.GetTableUserById(id)
 	if err != nil {
@@ -91,8 +89,6 @@ func (userServiceImpl *UserServiceImpl) GetUserByIdWithCurId(id int64, curId int
 		FollowCount:   0,
 		FollowerCount: 0,
 		IsFollow:      0,
-		//TotalFavorited: 0,
-		//FavoriteCount:  0,
 	}
 	tableUser, err := dao.GetTableUserById(id)
 	if err != nil {
