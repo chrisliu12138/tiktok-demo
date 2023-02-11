@@ -15,9 +15,13 @@ var ONE_YEAR = 365 * 60 * 60 * 24
 //redis 点赞前缀
 const Vedio_like = "vedio_like_"
 const User_like = "user_like_"
+const LIMIT_IP = "Limit_"
 
 //定时任务的mysql起止常量
 const MYSQL_LIMIT = 999
 
 //定时任务的规定时间
 const UPDATE_PERIOD = 2 * time.Hour
+
+//点赞接口限流的过期时间
+const LIMIT_PERIOD = 10 * time.Minute

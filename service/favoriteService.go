@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/RaymondCode/simple-demo/Utils"
 	"github.com/RaymondCode/simple-demo/service/impl"
+	"github.com/go-redis/redis/v8"
 	"strconv"
 
 	"github.com/RaymondCode/simple-demo/config"
@@ -11,6 +12,8 @@ import (
 
 var Vedio_like = config.Vedio_like
 var User_like = config.User_like
+var limit_ip = config.LIMIT_IP
+var time_out = config.LIMIT_PERIOD
 
 /*
 返回当前用户的所有点赞视频列表
@@ -42,7 +45,24 @@ func GetVedioLikeList(userId string) []impl.Result {
 //
 func LimitIP(ip, vedioId string) bool {
 	ctx := context.Background()
-	Utils.RDB.SCard(ctx, Vedio_like+vedioId).Result()
+	key := limit_ip + ip + vedioId
+	result, err := Utils.RDB.Get(ctx, key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			//如果是第一次访问，则set并设置过期时间
+			Utils.RDB.Set(ctx, key, 0, time_out).Result()
+			return true
+		} else {
+			panic(err)
+		}
+	}
+	count, _ := strconv.ParseInt(result, 10, 64)
+	if count <= 10 {
+		Utils.RDB.Incr(ctx, key)
+	} else {
+		//过期
+		return false
+	}
 	return true
 }
 
