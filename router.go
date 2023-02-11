@@ -23,14 +23,14 @@ func initRouter(r *gin.Engine) {
 	// extra apis - I
 	apiRouter.POST("/favorite/action/", jwt.Auth(), controller.FavoriteAction)
 	apiRouter.GET("/favorite/list/", jwt.Auth(), controller.FavoriteList)
-	apiRouter.POST("/comment/action/", controller.CommentAction)
-	apiRouter.GET("/comment/list/", controller.CommentList)
+	apiRouter.POST("/comment/action/", jwt.Auth(), controller.CommentAction)
+	apiRouter.GET("/comment/list/", jwt.AuthWithoutLogin(), controller.CommentList)
 
 	// extra apis - II
-	apiRouter.POST("/relation/action/", controller.RelationAction)
-	apiRouter.GET("/relation/follow/list/", controller.FollowList)
-	apiRouter.GET("/relation/follower/list/", controller.FollowerList)
-	apiRouter.GET("/relation/friend/list/", controller.FriendList)
-	apiRouter.GET("/message/chat/", controller.MessageChat)
-	apiRouter.POST("/message/action/", controller.MessageAction)
+	apiRouter.POST("/relation/action/", jwt.Auth(), controller.RelationAction)
+	apiRouter.GET("/relation/follow/list/", jwt.Auth(), controller.FollowList)
+	apiRouter.GET("/relation/follower/list/", jwt.Auth(), controller.FollowerList)
+	apiRouter.GET("/relation/friend/list/", jwt.Auth(), controller.FriendList)
+	apiRouter.GET("/message/chat/", jwt.Auth(), controller.MessageChat)
+	apiRouter.POST("/message/action/", jwt.Auth(), controller.MessageAction)
 }
