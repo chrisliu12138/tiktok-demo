@@ -27,16 +27,17 @@ func FavoriteAction(c *gin.Context) {
 	}
 }
 
-// FavoriteList all users have same favorite video list
-func FavoriteList(c *gin.Context) {
-
-	userid := c.Query("userId")
-
-	Videoslist := service.GetVedioLikeList(userid)
-	c.JSON(http.StatusOK, VideoListResponse{
-		Response: dao.Response{
-			StatusCode: 0,
-		},
-		VideoList: Videoslist,
-	})
-}
+//
+//// FavoriteList all users have same favorite video list
+//func FavoriteList(c *gin.Context) {
+//
+//	userid := c.Query("userId")
+//
+//	Videoslist := service.GetVedioLikeList(userid)
+//	c.JSON(http.StatusOK, VideoListResponse{
+//		Response: dao.Response{
+//			StatusCode: 0,
+//		},
+//		VideoList: Videoslist,
+//	})
+//}

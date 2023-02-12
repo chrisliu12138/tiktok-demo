@@ -4,10 +4,6 @@ import (
 	"fmt"
 	"github.com/RaymondCode/simple-demo/dao"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
-	"sync/atomic"
-	"time"
 )
 
 var tempChat = map[string][]dao.Message{}
@@ -21,45 +17,45 @@ type ChatResponse struct {
 
 // MessageAction no practical effect, just check if token is valid
 func MessageAction(c *gin.Context) {
-	token := c.Query("token")
-	toUserId := c.Query("to_user_id")
-	content := c.Query("content")
+	//token := c.Query("token")
+	//toUserId := c.Query("to_user_id")
+	//content := c.Query("content")
 
-	if user, exist := usersLoginInfo[token]; exist {
-		userIdB, _ := strconv.Atoi(toUserId)
-		chatKey := genChatKey(user.Id, int64(userIdB))
-
-		atomic.AddInt64(&messageIdSequence, 1)
-		curMessage := dao.Message{
-			Id:         messageIdSequence,
-			Content:    content,
-			CreateTime: time.Now().Format(time.Kitchen),
-		}
-
-		if messages, exist := tempChat[chatKey]; exist {
-			tempChat[chatKey] = append(messages, curMessage)
-		} else {
-			tempChat[chatKey] = []dao.Message{curMessage}
-		}
-		c.JSON(http.StatusOK, dao.Response{StatusCode: 0})
-	} else {
-		c.JSON(http.StatusOK, dao.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
-	}
+	//if user, exist := usersLoginInfo[token]; exist {
+	//	userIdB, _ := strconv.Atoi(toUserId)
+	//	chatKey := genChatKey(user.Id, int64(userIdB))
+	//
+	//	atomic.AddInt64(&messageIdSequence, 1)
+	//	curMessage := dao.Message{
+	//		Id:         messageIdSequence,
+	//		Content:    content,
+	//		CreateTime: time.Now().Format(time.Kitchen),
+	//	}
+	//
+	//	if messages, exist := tempChat[chatKey]; exist {
+	//		tempChat[chatKey] = append(messages, curMessage)
+	//	} else {
+	//		tempChat[chatKey] = []dao.Message{curMessage}
+	//	}
+	//	c.JSON(http.StatusOK, dao.Response{StatusCode: 0})
+	//} else {
+	//	c.JSON(http.StatusOK, dao.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+	//}
 }
 
 // MessageChat all users have same follow list
 func MessageChat(c *gin.Context) {
-	token := c.Query("token")
-	toUserId := c.Query("to_user_id")
-
-	if user, exist := usersLoginInfo[token]; exist {
-		userIdB, _ := strconv.Atoi(toUserId)
-		chatKey := genChatKey(user.Id, int64(userIdB))
-
-		c.JSON(http.StatusOK, ChatResponse{Response: dao.Response{StatusCode: 0}, MessageList: tempChat[chatKey]})
-	} else {
-		c.JSON(http.StatusOK, dao.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
-	}
+	//token := c.Query("token")
+	//toUserId := c.Query("to_user_id")
+	//
+	//if user, exist := usersLoginInfo[token]; exist {
+	//	userIdB, _ := strconv.Atoi(toUserId)
+	//	chatKey := genChatKey(user.Id, int64(userIdB))
+	//
+	//	c.JSON(http.StatusOK, ChatResponse{Response: dao.Response{StatusCode: 0}, MessageList: tempChat[chatKey]})
+	//} else {
+	//	c.JSON(http.StatusOK, dao.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+	//}
 }
 
 func genChatKey(userIdA int64, userIdB int64) string {

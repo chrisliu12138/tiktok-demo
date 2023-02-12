@@ -1,6 +1,8 @@
 package controller
 
-import "github.com/RaymondCode/simple-demo/dao"
+import (
+	"github.com/RaymondCode/simple-demo/dao"
+)
 
 var DemoVideos = []dao.Video{
 	{

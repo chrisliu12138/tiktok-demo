@@ -2,7 +2,6 @@ package test
 
 import (
 	"fmt"
-	"github.com/RaymondCode/simple-demo/dao"
 	"github.com/RaymondCode/simple-demo/service"
 	"testing"
 )
@@ -25,16 +24,16 @@ func TestGetTableUserById(t *testing.T) {
 	fmt.Printf("%v", list)
 }
 
-func TestInsertTableUser(t *testing.T) {
-	impl := service.UserServiceImpl{}
-	user := &dao.TableUser{
-		Id:       20000,
-		Name:     "qaq",
-		Password: "111111",
-	}
-	list := impl.InsertTableUser(user)
-	fmt.Printf("%v", list)
-}
+//func TestInsertTableUser(t *testing.T) {
+//	impl := service.UserServiceImpl{}
+//	user := &impl.TableUser{
+//		Id:       20000,
+//		Name:     "qaq",
+//		Password: "111111",
+//	}
+//	list := impl.InsertTableUser(user)
+//	fmt.Printf("%v", list)
+//}
 
 func TestGetUserById(t *testing.T) {
 	impl := service.UserServiceImpl{

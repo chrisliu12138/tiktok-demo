@@ -27,5 +27,5 @@ func main() {
 func InitDeps() {
 	// 初始化数据库连接
 	Utils.Init()
-	Utils.TimeMission()
+	//Utils.TimeMission()
 }
