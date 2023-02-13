@@ -48,3 +48,31 @@ func CommentList(c *gin.Context) {
 		CommentList: DemoComments,
 	})
 }
+
+//下面的两个方法写在service层
+func addComment(vedioId int64, comment string) bool {
+
+	//判断是否存在
+	/*
+
+		count := db.raw.(select count(1) from comment )
+
+		if count > 0{
+		//错误，已存在
+
+		}else{
+
+			1.新建comment对象，使用前端的参数赋值
+
+			2.向mysql中添加数据
+
+		}
+
+	*/
+	return true
+
+}
+
+func deleteComment() {
+	//逻辑如上，先判断在删除
+}
