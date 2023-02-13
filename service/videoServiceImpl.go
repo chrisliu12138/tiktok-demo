@@ -30,8 +30,8 @@ func (VideoServiceImpl *VideoServiceImpl) Query(userid int64) []dao.Video {
 
 // 根据videoArray查询稿件
 func (VideoServiceImpl *VideoServiceImpl) QueryListByVedioIdList(videoArray []int64) []dao.Video {
-	var videoList []dao.Video
 	rows := dao.QueryListByVedionl(videoArray)
+	var videoList = make([]dao.Video, len(rows))
 	if rows != nil {
 		videoList = convertPOtoDTO(rows, len(rows))
 		return videoList
@@ -42,9 +42,10 @@ func (VideoServiceImpl *VideoServiceImpl) QueryListByVedioIdList(videoArray []in
 
 // 查询最新的30个稿件
 func (VideoServiceImpl *VideoServiceImpl) QueryAll() []dao.Video {
-	var videoList []dao.Video
+	//var videoList []dao.Video
 	//封装videoList
 	rows := dao.QueryAll()
+	var videoList = make([]dao.Video, 30)
 	if rows != nil {
 		videoList = convertPOtoDTO(rows, 30)
 		return videoList
@@ -55,7 +56,7 @@ func (VideoServiceImpl *VideoServiceImpl) QueryAll() []dao.Video {
 
 // 转换PO为DTO
 func convertPOtoDTO(rows []dao.Result, len int) []dao.Video {
-	var videoList []dao.Video
+	var videoList = make([]dao.Video, len)
 	for i := 0; i < len; i++ {
 		fmt.Println(rows[i])
 		var author dao.User
