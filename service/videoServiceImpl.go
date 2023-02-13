@@ -16,35 +16,15 @@ func (VideoServiceImpl *VideoServiceImpl) Add(userId int64, playUrl string, titl
 
 // 根据userID查询稿件
 func (VideoServiceImpl *VideoServiceImpl) Query(userid int64) []dao.Video {
-	//2.根据用户id查询其所有Video
-	//2.查询成功则封装Response
+	//1.根据用户id查询其所有Video
 	var videoList []dao.Video
 	rows := dao.Query(uint(userid))
 	if rows != nil {
-		var length int = len(rows)
-
-		for i := 0; i < length; i++ {
-			fmt.Println(rows[i])
-			var author dao.User
-			author = dao.User{
-				Id:            int64(rows[i].UserID),
-				Name:          rows[i].Name,
-				FollowCount:   int64(rows[i].FollowCount),
-				FollowerCount: int64(rows[i].FollowerCount),
-				IsFollow:      int(rows[i].IsFollow),
-			}
-			//封装author
-			videoList[i].Author = author
-			videoList[i].Id = int64(rows[i].ID)
-			videoList[i].CoverUrl = rows[i].CoverUrl
-			videoList[i].CommentCount = int64(rows[i].CommentCount)
-			videoList[i].FavoriteCount = int64(rows[i].FavoriteCount)
-			videoList[i].IsFavorite = int(rows[i].IsFavorite)
-			videoList[i].PlayUrl = rows[i].PlayUrl
-			videoList[i].Title = rows[i].Title
-		}
+		//2.查询成功则封装Response
+		videoList = convertPOtoDTO(rows, len(rows))
+		return videoList
 	}
-	return videoList
+	return nil
 
 }
 
@@ -53,74 +33,27 @@ func (VideoServiceImpl *VideoServiceImpl) QueryListByVedioIdList(videoArray []in
 	var videoList []dao.Video
 	rows := dao.QueryListByVedionl(videoArray)
 	if rows != nil {
-		var length int = len(rows)
-
-		for i := 0; i < length; i++ {
-			fmt.Println(rows[i])
-			var author dao.User
-			author = dao.User{
-				Id:            int64(rows[i].UserID),
-				Name:          rows[i].Name,
-				FollowCount:   int64(rows[i].FollowCount),
-				FollowerCount: int64(rows[i].FollowerCount),
-				IsFollow:      int(rows[i].IsFollow),
-			}
-			//封装author
-			videoList[i].Author = author
-			videoList[i].Id = int64(rows[i].ID)
-			videoList[i].CoverUrl = rows[i].CoverUrl
-			videoList[i].CommentCount = int64(rows[i].CommentCount)
-			videoList[i].FavoriteCount = int64(rows[i].FavoriteCount)
-			videoList[i].IsFavorite = int(rows[i].IsFavorite)
-			videoList[i].PlayUrl = rows[i].PlayUrl
-			videoList[i].Title = rows[i].Title
-		}
+		videoList = convertPOtoDTO(rows, len(rows))
+		return videoList
 	}
-	return videoList
+	return nil
+
 }
 
 // 查询最新的30个稿件
-func (VideoServiceImpl *VideoServiceImpl) QueryAll() [30]dao.Video {
-	var videoList [30]dao.Video
+func (VideoServiceImpl *VideoServiceImpl) QueryAll() []dao.Video {
+	var videoList []dao.Video
+	//封装videoList
 	rows := dao.QueryAll()
 	if rows != nil {
-		var length int = len(rows)
-
-		for i := 0; i < length; i++ {
-			fmt.Println(rows[i])
-			var author dao.User
-			author = dao.User{
-				Id:            int64(rows[i].UserID),
-				Name:          rows[i].Name,
-				FollowCount:   int64(rows[i].FollowCount),
-				FollowerCount: int64(rows[i].FollowerCount),
-				IsFollow:      int(rows[i].IsFollow),
-			}
-			//封装author
-			videoList[i].Author = author
-			videoList[i].Id = int64(rows[i].ID)
-			videoList[i].CoverUrl = rows[i].CoverUrl
-			videoList[i].CommentCount = int64(rows[i].CommentCount)
-			videoList[i].FavoriteCount = int64(rows[i].FavoriteCount)
-			videoList[i].IsFavorite = int(rows[i].IsFavorite)
-			videoList[i].PlayUrl = rows[i].PlayUrl
-			videoList[i].Title = rows[i].Title
-		}
+		videoList = convertPOtoDTO(rows, 30)
+		return videoList
 	}
-	return videoList
+
+	return nil
 }
 
-//把重复代码给抽象出来
-func (VideoServiceImpl *VideoServiceImpl) QueryAll2() []dao.Video {
-	var dto []dao.Video
-	rows := dao.QueryAll()
-	if rows != nil {
-		dto = convertPOtoDTO(rows, 30)
-	}
-	return dto
-}
-
-//转换PO为DTO
+// 转换PO为DTO
 func convertPOtoDTO(rows []dao.Result, len int) []dao.Video {
 	var videoList []dao.Video
 	for i := 0; i < len; i++ {
