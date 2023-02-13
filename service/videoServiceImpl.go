@@ -9,7 +9,7 @@ type VideoServiceImpl struct {
 }
 
 // 上传稿件   userID:是谁发的(根据token去用户信息表查id)  playUrl：存在哪里  title：视频名字是啥
-func (VideoServiceImpl *VideoServiceImpl) Add(userId int64, playUrl string, title string) bool {
+func (VideoServiceImpl *VideoServiceImpl) Add(userId int, playUrl string, title string) bool {
 	flag := dao.Add(uint(userId), playUrl, title)
 	return flag
 }

@@ -118,7 +118,7 @@ func NewToken(user dao.TableUser) string {
 	claims := jwt.StandardClaims{
 		Audience:  user.Name,
 		ExpiresAt: expireTime,
-		Id:        strconv.FormatInt(user.Id, 10),
+		Id:        strconv.FormatInt(int64(user.Id), 10),
 		IssuedAt:  time.Now().Unix(),
 		Issuer:    "tiktok",
 		NotBefore: time.Now().Unix(),

@@ -30,14 +30,15 @@ func Publish(c *gin.Context) {
 
 	filename := filepath.Base(data.Filename)
 	//获取登录用户
-	userId, err := strconv.ParseInt(c.Query("userId"), 10, 64)
+
+	userName := c.PostForm("token")
 	if err != nil {
-		panic("字符型转整型失败")
+		panic("获取用户名失败")
 	}
 
-	user, err := dao.GetTableUserById(userId)
+	user, err := dao.GetTableUserByUserName(userName)
 	if err != nil {
-		panic("根据userId查询用户失败")
+		panic("根据userName查询用户失败")
 	}
 	//获取token的用户
 	finalName := fmt.Sprintf("%d_%s", user.Id, filename) //存的文件名字
@@ -51,7 +52,7 @@ func Publish(c *gin.Context) {
 	}
 	//给video表添加一条记录，包括title  playUrl uerId等
 	impl := service.VideoServiceImpl{}
-	var flag = impl.Add(userId, saveFile, "test")
+	var flag = impl.Add(user.Id, saveFile, "test")
 	fmt.Println(flag)
 
 	if flag == true {
@@ -71,6 +72,7 @@ func Publish(c *gin.Context) {
 // GET /douyin/publish/list
 func PublishList(c *gin.Context) {
 	//1.获取登录用户
+
 	userId, err := strconv.ParseInt(c.Query("userId"), 10, 64)
 	if err != nil {
 		panic("字符型转整型失败")
@@ -82,7 +84,7 @@ func PublishList(c *gin.Context) {
 	}
 	//2.根据用户id查询其所有Video
 	impl := service.VideoServiceImpl{}
-	videoList := impl.Query(user.Id)
+	videoList := impl.Query(int64(user.Id))
 	if videoList == nil {
 		c.JSON(http.StatusOK, FeedResponse{
 			Response: dao.Response{StatusCode: 0, StatusMsg: "查询失败"},

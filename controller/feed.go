@@ -3,16 +3,14 @@ package controller
 import (
 	impl2 "SimpleDouyin/dao"
 	"SimpleDouyin/service"
-	"net/http"
-	"time"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type FeedResponse struct {
 	impl2.Response
 	VideoList []impl2.Video `json:"video_list,omitempty"`
-	NextTime  time.Time     `json:"next_time,omitempty"`
+	//NextTime  time.Time     `json:"next_time,omitempty"`
 }
 
 // GET  /douyin/feed

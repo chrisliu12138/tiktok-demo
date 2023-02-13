@@ -11,14 +11,14 @@ import (
 
 // TableUser 对应数据库User表结构的结构体
 type TableUser struct {
-	Id       int64
-	Name     string
-	Password string
+	Id       int    `gorm:"primarykey"`
+	Name     string `gorm:"column:username"`
+	Password string `gorm:"column:password"`
 }
 
 // TableName 修改表名映射
 func (tableUser TableUser) TableName() string {
-	return "users"
+	return "user"
 }
 
 // GetTableUserList 获取全部TableUser对象

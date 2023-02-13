@@ -30,5 +30,5 @@ var DemoUser = dao.User{
 	Name:          "TestUser",
 	FollowCount:   0,
 	FollowerCount: 0,
-	IsFollow:      false,
+	IsFollow:      0,
 }

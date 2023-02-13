@@ -48,7 +48,7 @@ func Register(c *gin.Context) {
 		log.Println("当前用户注册的ID是 ", user.Id)
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: dao.Response{StatusCode: 0},
-			UserId:   user.Id,
+			UserId:   int64(user.Id),
 			Token:    token,
 		})
 	}
@@ -67,7 +67,7 @@ func Login(c *gin.Context) {
 		token := service.GenerateToken(username)
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: dao.Response{StatusCode: 0},
-			UserId:   user.Id,
+			UserId:   int64(user.Id),
 			Token:    token,
 		})
 	} else {
