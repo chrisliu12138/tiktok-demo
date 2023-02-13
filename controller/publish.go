@@ -50,11 +50,9 @@ func Publish(c *gin.Context) {
 		return
 	}
 	//给video表添加一条记录，包括title  playUrl uerId等
-	var flag bool = service.VideoServiceImpl.Add(userId, saveFile, "test")
-
 	impl := service.VideoServiceImpl{}
-	var flag2 = impl.Add(userId, saveFile, "test")
-	fmt.Println(flag2)
+	var flag = impl.Add(userId, saveFile, "test")
+	fmt.Println(flag)
 
 	if flag == true {
 		c.JSON(http.StatusOK, dao.Response{
@@ -83,7 +81,8 @@ func PublishList(c *gin.Context) {
 		panic("根据userId查询用户失败")
 	}
 	//2.根据用户id查询其所有Video
-	videoList := service.VideoServiceImpl.(user.Id)
+	impl := service.VideoServiceImpl{}
+	videoList := impl.Query(user.Id)
 	if videoList == nil {
 		c.JSON(http.StatusOK, FeedResponse{
 			Response: dao.Response{StatusCode: 0, StatusMsg: "查询失败"},
