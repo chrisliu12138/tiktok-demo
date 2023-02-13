@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"SimpleDouyin/DBUtils"
+	"SimpleDouyin/middleware/DBUtils"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SimpleDouyin/DBUtils"
+	"SimpleDouyin/middleware/DBUtils"
 	"SimpleDouyin/service"
 	"github.com/gin-gonic/gin"
 )

@@ -1,4 +1,4 @@
-package test
+package serviceTest
 
 import (
 	"SimpleDouyin/service"

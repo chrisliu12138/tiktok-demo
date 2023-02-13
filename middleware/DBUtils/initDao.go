@@ -1,4 +1,4 @@
-package dao
+package DBUtils
 
 import (
 	"log"
@@ -12,7 +12,7 @@ import (
 
 var Db *gorm.DB
 
-func InitDB() error{
+func InitDB() error {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
