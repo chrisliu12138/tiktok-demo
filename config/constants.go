@@ -25,3 +25,6 @@ const UPDATE_PERIOD = 2 * time.Hour
 
 //点赞接口限流的过期时间
 const LIMIT_PERIOD = 10 * time.Minute
+
+//redis关注列表及粉丝列表过期时间
+var ExpireTime = time.Hour * 48

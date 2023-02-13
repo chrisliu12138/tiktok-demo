@@ -28,7 +28,7 @@ type User struct {
 	Name          string `json:"name,omitempty"`
 	FollowCount   int64  `json:"follow_count,omitempty"`
 	FollowerCount int64  `json:"follower_count,omitempty"`
-	IsFollow      int    `json:"is_follow,omitempty"`
+	IsFollow      bool   `json:"is_follow,omitempty"`
 }
 
 type Message struct {
