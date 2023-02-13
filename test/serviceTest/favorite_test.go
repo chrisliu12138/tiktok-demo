@@ -1,10 +1,10 @@
-package test
+package serviceTest
 
 import (
+	"SimpleDouyin/dao"
+	"SimpleDouyin/middleware/DBUtils"
+	"SimpleDouyin/service"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/DBUtils"
-	"github.com/RaymondCode/simple-demo/dao"
-	"github.com/RaymondCode/simple-demo/service"
 	"math/rand"
 	"strconv"
 	"testing"

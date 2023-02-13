@@ -1,8 +1,7 @@
 package dao
 
 import (
-	"github.com/RaymondCode/simple-demo/DBUtils"
-
+	"SimpleDouyin/middleware/DBUtils"
 	"log"
 )
 

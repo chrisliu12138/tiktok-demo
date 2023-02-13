@@ -1,9 +1,10 @@
 package dao
 
 import (
+	"SimpleDouyin/config"
+	"SimpleDouyin/middleware/DBUtils"
 	"context"
-	"github.com/RaymondCode/simple-demo/DBUtils"
-	"github.com/RaymondCode/simple-demo/config"
+
 	"github.com/go-redis/redis/v8"
 	"strconv"
 )

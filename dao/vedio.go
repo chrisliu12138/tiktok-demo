@@ -1,9 +1,8 @@
 package dao
 
 import (
+	"SimpleDouyin/middleware/DBUtils"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/DBUtils"
-	//"github.com/RaymondCode/simple-demo/service"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
