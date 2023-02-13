@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/RaymondCode/simple-demo/dao"
+	"SimpleDouyin/dao"
 )
 
 var DemoVideos = []dao.Video{

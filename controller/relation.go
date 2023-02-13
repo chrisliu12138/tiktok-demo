@@ -1,9 +1,10 @@
 package controller
 
 import (
-	"github.com/RaymondCode/simple-demo/dao"
-	"github.com/gin-gonic/gin"
+	"SimpleDouyin/dao"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type UserListResponse struct {

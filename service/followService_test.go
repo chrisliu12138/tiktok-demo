@@ -5,9 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/RaymondCode/simple-demo/dao"
-	"github.com/RaymondCode/simple-demo/middleware/rabbitmq"
-	"github.com/RaymondCode/simple-demo/middleware/redis"
+	"SimpleDouyin/dao"
+	"SimpleDouyin/middleware/rabbitmq"
+	"SimpleDouyin/middleware/redis"
+
 	"github.com/stretchr/testify/assert"
 )
 

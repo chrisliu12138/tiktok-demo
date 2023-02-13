@@ -6,10 +6,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/RaymondCode/simple-demo/config"
-	"github.com/RaymondCode/simple-demo/dao"
-	"github.com/RaymondCode/simple-demo/middleware/rabbitmq"
-	"github.com/RaymondCode/simple-demo/middleware/redis"
+	"SimpleDouyin/config"
+	"SimpleDouyin/dao"
+	"SimpleDouyin/middleware/rabbitmq"
+	"SimpleDouyin/middleware/redis"
+
 	"github.com/jinzhu/gorm"
 )
 

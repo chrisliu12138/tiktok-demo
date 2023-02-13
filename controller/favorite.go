@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"github.com/RaymondCode/simple-demo/dao"
-	"github.com/RaymondCode/simple-demo/service"
-	"github.com/gin-gonic/gin"
+	"SimpleDouyin/dao"
+	"SimpleDouyin/service"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 // FavoriteAction no practical effect, just check if token is valid

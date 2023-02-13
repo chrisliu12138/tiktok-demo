@@ -1,12 +1,13 @@
 package controller
 
 import (
-	"github.com/RaymondCode/simple-demo/dao"
-	"github.com/RaymondCode/simple-demo/service"
-	"github.com/gin-gonic/gin"
+	"SimpleDouyin/dao"
+	"SimpleDouyin/service"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type UserLoginResponse struct {

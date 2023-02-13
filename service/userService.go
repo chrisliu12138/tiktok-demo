@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/RaymondCode/simple-demo/dao"
+	"SimpleDouyin/dao"
 )
 
 // User controller进行最终封装返回的User用户结构体

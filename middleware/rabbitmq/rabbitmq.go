@@ -1,12 +1,12 @@
 package rabbitmq
 
 import (
+	"SimpleDouyin/config"
+	"SimpleDouyin/middleware/redis"
 	"fmt"
 	"log"
 	"strings"
 
-	"github.com/RaymondCode/simple-demo/config"
-	"github.com/RaymondCode/simple-demo/middleware/redis"
 	"github.com/streadway/amqp"
 )
 

@@ -1,11 +1,12 @@
 package jwt
 
 import (
-	"github.com/RaymondCode/simple-demo/config"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
+	"SimpleDouyin/config"
 	"net/http"
 	"strings"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 type Response struct {

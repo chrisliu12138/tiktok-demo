@@ -1,15 +1,16 @@
 package service
 
 import (
+	"SimpleDouyin/config"
+	"SimpleDouyin/dao"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"github.com/RaymondCode/simple-demo/config"
-	"github.com/RaymondCode/simple-demo/dao"
-	"github.com/dgrijalva/jwt-go"
 	"log"
 	"strconv"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 type UserServiceImpl struct {
@@ -67,7 +68,7 @@ func (userServiceImpl *UserServiceImpl) GetUserById(id int64) (dao.User, error) 
 		Name:          "",
 		FollowCount:   0,
 		FollowerCount: 0,
-		IsFollow:      0,
+		IsFollow:      false,
 	}
 	tableUser, err := dao.GetTableUserById(id)
 	if err != nil {
@@ -88,7 +89,7 @@ func (userServiceImpl *UserServiceImpl) GetUserByIdWithCurId(id int64, curId int
 		Name:          "",
 		FollowCount:   0,
 		FollowerCount: 0,
-		IsFollow:      0,
+		IsFollow:      false,
 	}
 	tableUser, err := dao.GetTableUserById(id)
 	if err != nil {

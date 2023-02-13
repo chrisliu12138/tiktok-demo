@@ -1,9 +1,9 @@
 package test
 
 import (
+	"SimpleDouyin/dao"
 	"encoding/json"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/dao"
 	"io"
 	"net"
 	"testing"

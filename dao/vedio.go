@@ -1,15 +1,17 @@
 package dao
 
 import (
+	"SimpleDouyin/Utils"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/Utils"
+
 	//"github.com/RaymondCode/simple-demo/service"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 	"log"
 	"os"
 	"time"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 // VideoEntity

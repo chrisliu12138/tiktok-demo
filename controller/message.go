@@ -1,8 +1,9 @@
 package controller
 
 import (
+	"SimpleDouyin/dao"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/dao"
+
 	"github.com/gin-gonic/gin"
 )
 

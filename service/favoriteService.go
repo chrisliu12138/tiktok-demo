@@ -1,13 +1,13 @@
 package service
 
 import (
+	"SimpleDouyin/Utils"
 	"context"
-	"github.com/RaymondCode/simple-demo/Utils"
-	"github.com/RaymondCode/simple-demo/service/impl"
-	"github.com/go-redis/redis/v8"
 	"strconv"
 
-	"github.com/RaymondCode/simple-demo/config"
+	"github.com/go-redis/redis/v8"
+
+	"SimpleDouyin/config"
 )
 
 var Vedio_like = config.Vedio_like

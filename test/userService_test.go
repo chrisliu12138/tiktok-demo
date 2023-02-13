@@ -1,8 +1,8 @@
 package test
 
 import (
+	"SimpleDouyin/service"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/service"
 	"testing"
 )
 

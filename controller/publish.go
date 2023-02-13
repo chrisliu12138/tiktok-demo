@@ -1,13 +1,14 @@
 package controller
 
 import (
+	"SimpleDouyin/dao"
+	"SimpleDouyin/service"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/dao"
-	"github.com/RaymondCode/simple-demo/service"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type VideoListResponse struct {

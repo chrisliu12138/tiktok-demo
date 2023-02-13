@@ -1,6 +1,6 @@
 package service
 
-import "github.com/RaymondCode/simple-demo/dao"
+import "SimpleDouyin/dao"
 
 type VideoService interface {
 	/*

@@ -1,7 +1,7 @@
 package test
 
 import (
-	"github.com/RaymondCode/simple-demo/dao"
+	"SimpleDouyin/dao"
 	"testing"
 )
 

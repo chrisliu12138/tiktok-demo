@@ -1,11 +1,12 @@
 package controller
 
 import (
-	impl2 "github.com/RaymondCode/simple-demo/dao"
-	"github.com/RaymondCode/simple-demo/service"
-	"github.com/gin-gonic/gin"
+	impl2 "SimpleDouyin/dao"
+	"SimpleDouyin/service"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type FeedResponse struct {

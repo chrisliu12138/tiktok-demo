@@ -1,8 +1,8 @@
 package service
 
 import (
+	"SimpleDouyin/dao"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/dao"
 )
 
 type VideoServiceImpl struct {

@@ -1,9 +1,9 @@
 package test
 
 import (
+	"SimpleDouyin/Utils"
+	"SimpleDouyin/service"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/Utils"
-	"github.com/RaymondCode/simple-demo/service"
 	"math/rand"
 	"strconv"
 	"testing"

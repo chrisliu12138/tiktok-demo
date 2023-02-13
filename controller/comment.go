@@ -1,9 +1,11 @@
 package controller
 
 import (
-	"github.com/RaymondCode/simple-demo/dao"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"SimpleDouyin/dao"
+
+	"github.com/gin-gonic/gin"
 )
 
 type CommentListResponse struct {
