@@ -51,6 +51,11 @@ func Publish(c *gin.Context) {
 	}
 	//给video表添加一条记录，包括title  playUrl uerId等
 	var flag bool = service.VideoServiceImpl.Add(userId, saveFile, "test")
+
+	impl := service.VideoServiceImpl{}
+	var flag2 = impl.Add(userId, saveFile, "test")
+	fmt.Println(flag2)
+
 	if flag == true {
 		c.JSON(http.StatusOK, dao.Response{
 			StatusCode: 0,
