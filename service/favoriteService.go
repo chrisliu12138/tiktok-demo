@@ -1,12 +1,11 @@
 package service
 
 import (
+	"SimpleDouyin/config"
+	"SimpleDouyin/dao"
 	"errors"
-	"github.com/RaymondCode/simple-demo/dao"
 	"strconv"
 	"time"
-
-	"github.com/RaymondCode/simple-demo/config"
 )
 
 /*
