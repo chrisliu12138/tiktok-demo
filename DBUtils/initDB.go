@@ -1,4 +1,4 @@
-package Utils
+package DBUtils
 
 import (
 	"github.com/go-redis/redis/v8"

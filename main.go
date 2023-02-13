@@ -1,8 +1,8 @@
 package main
 
 import (
-	"SimpleDouyin/Utils"
-
+	"github.com/RaymondCode/simple-demo/DBUtils"
+	"github.com/RaymondCode/simple-demo/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,6 +27,7 @@ func main() {
 // InitDeps 加载项目依赖
 func InitDeps() {
 	// 初始化数据库连接
-	Utils.Init()
-	//Utils.TimeMission()
+	DBUtils.Init()
+	//开启定时任务
+	service.TimeMission()
 }

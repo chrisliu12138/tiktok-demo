@@ -1,9 +1,10 @@
 package test
 
 import (
-	"SimpleDouyin/Utils"
-	"SimpleDouyin/service"
 	"fmt"
+	"github.com/RaymondCode/simple-demo/DBUtils"
+	"github.com/RaymondCode/simple-demo/dao"
+	"github.com/RaymondCode/simple-demo/service"
 	"math/rand"
 	"strconv"
 	"testing"
@@ -23,8 +24,8 @@ Tips：
 建议手动点一下，看看控制台
 */
 func TestGetVedioLikeList(t *testing.T) {
-	Utils.InitRedisTemplete()
-	if Utils.RDB == nil {
+	DBUtils.InitRedisTemplete()
+	if DBUtils.RDB == nil {
 		fmt.Println("初始化失败")
 	}
 	list := service.GetVedioLikeCount("2")
@@ -34,7 +35,7 @@ func TestGetVedioLikeList(t *testing.T) {
 }
 
 func TestAdddata(t *testing.T) {
-	Utils.InitRedisTemplete()
+	DBUtils.InitRedisTemplete()
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 10; i++ {
 		num := rand.Int63n(30)
@@ -43,21 +44,18 @@ func TestAdddata(t *testing.T) {
 }
 
 func BenchmarkDislikeVedio(b *testing.B) {
-	Utils.InitRedisTemplete()
+	DBUtils.InitRedisTemplete()
 	result := service.DislikeVedio("11", "15")
 	fmt.Println(result)
 }
 
 func TestTimeClock(t *testing.T) {
-	Utils.InitRedisTemplete()
-	ticker := time.NewTicker(3 * time.Second)
-	go func() {
-		for {
-			<-ticker.C
-			fmt.Println("zzzzzzzz")
-		}
-	}()
-	time.Sleep(20 * time.Second)
-	ticker.Stop()
-	fmt.Println("aaaaaaa")
+	DBUtils.InitMysqlTemplete()
+	fmt.Println(DBUtils.DB)
+	//vedioIds := dao.GetVedioIdWithLimit(0, 99)
+	//count := dao.GetVedioCount()
+	//fmt.Println(vedioIds) //1-100
+	//fmt.Println(count)    //100
+	result := dao.UpdateVedioLikeCount(2, 999) //true
+	fmt.Println(result)
 }

@@ -10,7 +10,7 @@ type VideoService interface {
 	QueryAll() [30]dao.Video
 
 	// 根据videoArray查询稿件
-	QueryListByVedionl(videoArray []int64) []dao.Video
+	QueryListByVedioIdList(videoArray []int64) []dao.Video
 
 	// 根据userID查询稿件
 	Query(userid int64) []dao.Video

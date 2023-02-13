@@ -1,82 +1,35 @@
 package service
 
 import (
-	"SimpleDouyin/Utils"
-	"context"
+	"errors"
+	"github.com/RaymondCode/simple-demo/dao"
 	"strconv"
+	"time"
 
-	"github.com/go-redis/redis/v8"
-
-	"SimpleDouyin/config"
+	"github.com/RaymondCode/simple-demo/config"
 )
-
-var Vedio_like = config.Vedio_like
-var User_like = config.User_like
-var limit_ip = config.LIMIT_IP
-var time_out = config.LIMIT_PERIOD
 
 /*
 返回当前用户的所有点赞视频列表
 */
-func GetVedioLikeList(userId string) []impl.Result {
+func GetVedioLikeList(userId string) []dao.Video {
 	var IdList []int64
-	ctx := context.Background()
-	result, err := Utils.RDB.SMembers(ctx, User_like+userId).Result()
-	if err != nil {
-		panic(err)
+	members := dao.SMembers(userId)
+	for i, s := range members {
+		IdList[i], _ = strconv.ParseInt(s, 10, 64)
 	}
-	for i, s := range result {
-		IdList[i], err = strconv.ParseInt(s, 10, 64)
-	}
-	//调用service方法
-	//vedioList := []dao.Video
-	results := impl.QueryListByVedionl(IdList)
-	//UuserServiceImpl := UserServiceImpl{}
-	//for _, r := range results {
-	//	vedio := dao.Video{
-	//		Id: int64(r.ID),
-	//		Author:
-	//	}
-	//
-	//}
-	return results
-}
 
-//
-func LimitIP(ip, vedioId string) bool {
-	ctx := context.Background()
-	key := limit_ip + ip + vedioId
-	result, err := Utils.RDB.Get(ctx, key).Result()
-	if err != nil {
-		if err == redis.Nil {
-			//如果是第一次访问，则set并设置过期时间
-			Utils.RDB.Set(ctx, key, 0, time_out).Result()
-			return true
-		} else {
-			panic(err)
-		}
-	}
-	count, _ := strconv.ParseInt(result, 10, 64)
-	if count <= 10 {
-		Utils.RDB.Incr(ctx, key)
-	} else {
-		//过期
-		return false
-	}
-	return true
+	//调用service方法
+	impl := VideoServiceImpl{}
+	videos := impl.QueryListByVedioIdList(IdList)
+	return videos
 }
 
 /*
 返回当前视频的点赞总数，视频不存在则返回0
 */
 func GetVedioLikeCount(vedioId string) int64 {
-	var count = int64(0)
-	ctx := context.Background()
-	result, err := Utils.RDB.SCard(ctx, Vedio_like+vedioId).Result()
-	if err != nil {
-		panic(err)
-	}
-	count = result
+	count := dao.SelectCount(vedioId)
 	return count
 }
 
@@ -84,28 +37,63 @@ func GetVedioLikeCount(vedioId string) int64 {
 点赞操作
 返回值为int，点赞成功则为1，否则为0且报错
 */
-func Like(vedioId, userId string) int {
-	ctx := context.Background()
-	result, err := Utils.RDB.SAdd(ctx, Vedio_like+vedioId, userId).Result()
-	if err != nil {
-		panic(err)
+func Like(vedioId, userId string) int64 {
+	add := dao.SAdd(vedioId, userId)
+	add2 := dao.SAdd(userId, vedioId)
+	return add & add2
+}
+
+/**
+取消点赞操作
+返回值为int，点赞成功则为1，否则为0且报错
+*/
+func DislikeVedio(vedioId, userId string) int64 {
+	remove := dao.Sremove(vedioId, userId)
+	sremove := dao.Sremove(userId, vedioId)
+	return remove & sremove
+}
+
+//查询当前用户是否点赞
+func LikeVedioOrNot(vedioId, userId string) bool {
+	member := dao.SIsMember(vedioId, userId)
+	return member
+}
+
+// 定时任务，把redis中的数据更新到mysql中的点赞表里
+func TimeMission() {
+	ticker := time.NewTicker(config.UPDATE_PERIOD)
+	go func() {
+		for {
+			<-ticker.C
+			SaveRedisDataToMySql()
+		}
+	}()
+}
+
+func SaveRedisDataToMySql() {
+	count := dao.GetVedioCount()
+	var i int64
+	for i = 0; i < count; i += config.MYSQL_LIMIT {
+		//拿到当前的所有视频id
+		userIds := dao.GetVedioIdWithLimit(i, config.MYSQL_LIMIT)
+		//根据视频id更新mysql表中所有视频的点赞数
+		for _, id := range userIds {
+			//1. 从redis中取出当前vedio的点赞数
+			likeCount := GetVedioLikeCount(string(id))
+			//2. 更新mysql中的对应id的vedio点赞数
+			bool := dao.UpdateVedioLikeCount(id, likeCount)
+			if !bool {
+				errors.New("redis持久化更新失败")
+			}
+		}
 	}
-	result2, err := Utils.RDB.SAdd(ctx, User_like+userId, vedioId).Result()
-	if err != nil {
-		panic(err)
-	}
-	return int(result) & int(result2)
 }
 
 /*
 测试用，为redis添加数据
 */
 func Add(vedioId, userId string) int64 {
-	ctx := context.Background()
-	result, err := Utils.RDB.SAdd(ctx, Vedio_like+vedioId, userId).Result()
-	if err != nil {
-		panic(err)
-	}
+	result := dao.SAdd(vedioId, userId)
 	return result
 }
 
@@ -113,37 +101,6 @@ func Add(vedioId, userId string) int64 {
 测试用，为redis添加数据
 */
 func AdduserId(userId, vedioId string) int64 {
-	ctx := context.Background()
-	result, err := Utils.RDB.SAdd(ctx, User_like+userId, vedioId).Result()
-	if err != nil {
-		panic(err)
-	}
-	return result
-}
-
-/**
-取消点赞操作
-返回值为int，点赞成功则为1，否则为0且报错
-*/
-func DislikeVedio(vedioId, userId string) int {
-	ctx := context.Background()
-	result, err := Utils.RDB.SRem(ctx, Vedio_like+vedioId, userId).Result()
-	if err != nil {
-		panic(err)
-	}
-	result2, err := Utils.RDB.SRem(ctx, User_like+userId, vedioId).Result()
-	if err != nil {
-		panic(err)
-	}
-	return int(result) & int(result2)
-}
-
-//查询当前用户是否点赞
-func LikeVedioOrNot(vedioId, userId string) bool {
-	ctx := context.Background()
-	result, err := Utils.RDB.SIsMember(ctx, Vedio_like+vedioId, userId).Result()
-	if err != nil {
-		panic(err)
-	}
-	return result
+	add := dao.SAdd(userId, vedioId)
+	return add
 }

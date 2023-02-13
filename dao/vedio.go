@@ -1,17 +1,15 @@
 package dao
 
 import (
-	"SimpleDouyin/Utils"
 	"fmt"
-
+	"github.com/RaymondCode/simple-demo/DBUtils"
 	//"github.com/RaymondCode/simple-demo/service"
-	"log"
-	"os"
-	"time"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"log"
+	"os"
+	"time"
 )
 
 // VideoEntity
@@ -195,7 +193,7 @@ func QueryAll() []Result {
 // 拿到当前的所有视频id，限制起止数
 func GetVedioIdWithLimit(start, limit int64) []int64 {
 	var videoIds []int64
-	err := Utils.DB.Raw("SELECT ID FROM video OFFSET ? LIMIT ?", start, limit).Scan(&videoIds)
+	err := DBUtils.DB.Raw("SELECT ID FROM video LIMIT ? OFFSET ?", limit, start).Scan(&videoIds).Error
 	if err != nil {
 		panic(err)
 	}
@@ -205,18 +203,21 @@ func GetVedioIdWithLimit(start, limit int64) []int64 {
 // 返回视频总数
 func GetVedioCount() int64 {
 	var count int64
-	Utils.DB.Raw("SELECT count(1) from video").Scan(&count)
+	err := DBUtils.DB.Raw("SELECT count(1) from video").Find(&count).Error
+	if err != nil {
+		panic(err)
+	}
 	return count
 }
 
-// 更新mysql中的点赞总数
-//func UpdateVedioLikeCount(vedioId, likeCount int64) bool {
-//	//Video := service.Video{ID: uint(vedioId)}
-//	//result := true
-//	//err := Utils.DB.Model(&Video).Update("FavoriteCount", likeCount).Error
-//	//if err != nil {
-//	//	result = false
-//	//	panic(err)
-//	//}
-//	//return result
-//}
+//更新mysql中的点赞总数
+func UpdateVedioLikeCount(vedioId, likeCount int64) bool {
+	Video := VideoEntity{ID: uint((vedioId))}
+	result := true
+	err := DBUtils.DB.Table("video").Model(&Video).Update("FavoriteCount", likeCount).Error
+	if err != nil {
+		result = false
+		panic(err)
+	}
+	return result
+}
