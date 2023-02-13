@@ -3,11 +3,6 @@ package dao
 import (
 	"SimpleDouyin/middleware/DBUtils"
 	"fmt"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
-	"log"
-	"os"
 	"time"
 )
 
@@ -42,33 +37,15 @@ type Result struct {
 }
 
 // 定义表名
-func (v Video) TableName() string {
+func (v VideoEntity) TableName() string {
 	return "video"
 }
 
 // 上传稿件   userID:是谁发的(根据token去用户信息表查id)  playUrl：存在哪里  title：视频名字是啥
 func Add(uerId uint, playUrl string, title string) bool {
-	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-		logger.Config{
-			SlowThreshold: 2 * time.Second, // 慢 SQL 阈值
-			LogLevel:      logger.Info,     // Log level
-			Colorful:      true,            // 彩色打印
-		},
-	)
-	dsn := fmt.Sprintf("root:root123@tcp(1.117.88.168:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local")
-	//连接数据库
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger:                                   newLogger,
-		SkipDefaultTransaction:                   true,
-		PrepareStmt:                              true,
-		DisableForeignKeyConstraintWhenMigrating: true,
-	})
-	if err != nil {
-		panic("failed to connect database")
-	}
+	DBUtils.InitMysqlTemplete()
 	video := VideoEntity{Title: title, PlayUrl: playUrl, UserID: uerId}
-	result := db.Create(&video) // 通过数据的指针来创建
+	result := DBUtils.DB.Create(&video) // 通过数据的指针来创建
 	if result.Error != nil {
 		return false //上传失败
 	}
@@ -88,29 +65,10 @@ func Query(userid uint) []Result {
 	//查询某个用户的所有视频
 	//rows := make([]*Result, 0)
 	var rows []Result
-	//连接数据库并查询
-	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-		logger.Config{
-			SlowThreshold: 2 * time.Second, // 慢 SQL 阈值
-			LogLevel:      logger.Info,     // Log level
-			Colorful:      true,            // 彩色打印
-		},
-	)
-	dsn := fmt.Sprintf("tiktok:tiktok123@tcp(1.117.88.168:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local")
-	//连接数据库
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger:                                   newLogger,
-		SkipDefaultTransaction:                   true,
-		PrepareStmt:                              true,
-		DisableForeignKeyConstraintWhenMigrating: true,
-	})
-	if err != nil {
-		panic("failed to connect database")
-	}
+	DBUtils.InitMysqlTemplete()
 	//连接数据库并查询
 	// SELECT * FROM `video` left join user on user.id = video.user_id where user_id = usrId;
-	result := db.Model(&Video{}).
+	result := DBUtils.DB.Model(&VideoEntity{}).
 		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user.id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Where("user.id = ?", userid).Scan(&rows)
 	if result.Error != nil {
 		return nil //查询失败
@@ -123,29 +81,11 @@ func Query(userid uint) []Result {
 func QueryListByVedionl(videoArray []int64) []Result {
 	//rows := make([]*Result, 0)
 	var rows []Result
-	//连接数据库并查询
-	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-		logger.Config{
-			SlowThreshold: 2 * time.Second, // 慢 SQL 阈值
-			LogLevel:      logger.Info,     // Log level
-			Colorful:      true,            // 彩色打印
-		},
-	)
-	dsn := fmt.Sprintf("tiktok:tiktok123@tcp(1.117.88.168:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local")
-	//连接数据库
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger:                                   newLogger,
-		SkipDefaultTransaction:                   true,
-		PrepareStmt:                              true,
-		DisableForeignKeyConstraintWhenMigrating: true,
-	})
-	if err != nil {
-		panic("failed to connect database")
-	}
-	// SELECT * FROM `video` left join user on user.id = video.user_id where video.id = ID;
-	result := db.Model(&Video{}).
-		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user_id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Where(videoArray).Scan(&rows)
+	DBUtils.InitMysqlTemplete()
+	fmt.Println(DBUtils.DB)
+	result := DBUtils.DB.Model(&VideoEntity{}).
+		Select("video.id,video.title,video.play_url,video.cover_url,video.favorite_count,video.comment_count,video.is_favorite,video.create_time,video.user_id,user.name,user.follow_count,user.follower_count,user.bool").
+		Joins("left join user on user.id = video.user_id").Where(videoArray).Scan(&rows)
 
 	if result.Error != nil {
 		return nil //查询失败
@@ -159,29 +99,10 @@ func QueryAll() []Result {
 	//查询最新的30条数据
 	//rows := make([]*Result, 0)
 	var rows []Result
-	//连接数据库并查询
-	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-		logger.Config{
-			SlowThreshold: 2 * time.Second, // 慢 SQL 阈值
-			LogLevel:      logger.Info,     // Log level
-			Colorful:      true,            // 彩色打印
-		},
-	)
-	dsn := fmt.Sprintf("tiktok:tiktok123@tcp(1.117.88.168:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local")
-	//连接数据库
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger:                                   newLogger,
-		SkipDefaultTransaction:                   true,
-		PrepareStmt:                              true,
-		DisableForeignKeyConstraintWhenMigrating: true,
-	})
-	if err != nil {
-		panic("failed to connect database")
-	}
+	DBUtils.InitMysqlTemplete()
 	//连接数据库并查询
 	// SELECT * FROM `video` left join user on user.id = video.user_id ORDER BY create_time desc  LIMIT 30;
-	result := db.Model(&Video{}).
+	result := DBUtils.DB.Model(&VideoEntity{}).
 		Select("video.id,title,play_url,cover_url,favorite_count,comment_count,is_favorite,video.create_time,user_id,name,follow_count,follower_count,bool").Joins("left join user on user.id = video.user_id").Order("video.create_time desc").Limit(30).Scan(&rows)
 	if result.Error != nil {
 		return nil //查询失败
@@ -209,7 +130,7 @@ func GetVedioCount() int64 {
 	return count
 }
 
-//更新mysql中的点赞总数
+// 更新mysql中的点赞总数
 func UpdateVedioLikeCount(vedioId, likeCount int64) bool {
 	Video := VideoEntity{ID: uint((vedioId))}
 	result := true

@@ -25,7 +25,7 @@ func Follow(userId, toUserid int64, actionType int64) (bool, error) {
 	return result, err
 }
 
-//关注列表
+// 关注列表
 func FollowList(userId int64) ([]dao.User, error) {
 	//查询redis
 	userIdStr := strconv.FormatInt(userId, 10)
@@ -54,7 +54,7 @@ func FollowList(userId int64) ([]dao.User, error) {
 	return queryList(userId, toUsersStr, true)
 }
 
-//粉丝列表
+// 粉丝列表
 func FollowerList(userId int64) ([]dao.User, error) {
 	//查询redis
 	userIdStr := strconv.FormatInt(userId, 10)
@@ -95,13 +95,13 @@ func queryList(userId int64, list []string, follow bool) ([]dao.User, error) {
 
 		if follow {
 			if err := DBUtils.Db.Raw("select user_id from follow where user_id = ? and to_user_id = ? and cancel = 0", userId, user).Error; err == nil {
-				tmpUser.IsFollow = true
+				tmpUser.IsFollow = 1
 			} else if gorm.IsRecordNotFoundError(err) {
 				log.Println("mysql查询错误: ", err)
 			}
 		} else {
 			if err := DBUtils.Db.Raw("select user_id from follow where user_id = ? and to_user_id = ? and cancel = 0", user, userId).Error; gorm.IsRecordNotFoundError(err) {
-				tmpUser.IsFollow = true
+				tmpUser.IsFollow = 1
 			}
 		}
 		users = append(users, tmpUser)
@@ -156,7 +156,7 @@ func unfollow(userId, toUserId int64) (bool, error) {
 	return true, nil
 }
 
-//获取关注总数
+// 获取关注总数
 func GetFollowCnt(userId int64) (followCnt int64, err error) {
 	//查询redis
 	userIdStr := strconv.FormatInt(userId, 10)
@@ -179,7 +179,7 @@ func GetFollowCnt(userId int64) (followCnt int64, err error) {
 	return int64(len(toUsers)), err
 }
 
-//获取粉丝总数
+// 获取粉丝总数
 func GetFollowerCnt(userId int64) (followCnt int64, err error) {
 	//查询redis
 	userIdStr := strconv.FormatInt(userId, 10)
@@ -202,7 +202,7 @@ func GetFollowerCnt(userId int64) (followCnt int64, err error) {
 	return int64(len(toUsers)), err
 }
 
-//将关注列表放入redis
+// 将关注列表放入redis
 func addFollowToRedis(userId int64, toUsers []int) {
 	userIdStr := strconv.FormatInt(userId, 10)
 	for i := 0; i < len(toUsers); i++ {
@@ -212,7 +212,7 @@ func addFollowToRedis(userId int64, toUsers []int) {
 	}
 }
 
-//将粉丝列表放入redis
+// 将粉丝列表放入redis
 func addFollowerToRedis(userId int64, toUsers []int) {
 	userIdStr := strconv.FormatInt(userId, 10)
 	for i := 0; i < len(toUsers); i++ {

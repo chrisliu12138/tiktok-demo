@@ -68,7 +68,7 @@ func (userServiceImpl *UserServiceImpl) GetUserById(id int64) (dao.User, error) 
 		Name:          "",
 		FollowCount:   0,
 		FollowerCount: 0,
-		IsFollow:      false,
+		IsFollow:      0,
 	}
 	tableUser, err := dao.GetTableUserById(id)
 	if err != nil {
@@ -89,7 +89,7 @@ func (userServiceImpl *UserServiceImpl) GetUserByIdWithCurId(id int64, curId int
 		Name:          "",
 		FollowCount:   0,
 		FollowerCount: 0,
-		IsFollow:      false,
+		IsFollow:      0, //数据库中存的 0：表示false 1 表示成功
 	}
 	tableUser, err := dao.GetTableUserById(id)
 	if err != nil {
