@@ -14,7 +14,7 @@ func TestGetTableUserList(t *testing.T) {
 
 func TestGetTableUserByUsername(t *testing.T) {
 	impl := service.UserServiceImpl{}
-	list := impl.GetTableUserByUsername("test")
+	list := impl.GetTableUserByUsername("小野六花")
 	fmt.Printf("%v", list)
 }
 

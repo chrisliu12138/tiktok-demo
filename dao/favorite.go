@@ -16,15 +16,32 @@ var time_out = config.LIMIT_PERIOD
 
 var ctx = context.Background()
 
-func SAdd(key string, value string) int64 {
-	result, err := DBUtils.RDB.SAdd(ctx, key, value).Result()
+//添加用户点赞过的视频
+func SAddUserLike(key string, value string) int64 {
+	result, err := DBUtils.RDB.SAdd(ctx, User_like+key, value).Result()
 	if err != nil {
 		panic(err)
 	}
 	return result
 }
-func Sremove(key, value string) int64 {
+
+//添加视频所有的点赞
+func SAddVideoLike(key string, value string) int64 {
+	result, err := DBUtils.RDB.SAdd(ctx, Vedio_like+key, value).Result()
+	if err != nil {
+		panic(err)
+	}
+	return result
+}
+func SremoveVedioLike(key, value string) int64 {
 	result, err := DBUtils.RDB.SRem(ctx, Vedio_like+key, value).Result()
+	if err != nil {
+		panic(err)
+	}
+	return result
+}
+func SremoveUserLike(key, value string) int64 {
+	result, err := DBUtils.RDB.SRem(ctx, User_like+key, value).Result()
 	if err != nil {
 		panic(err)
 	}
@@ -36,9 +53,6 @@ func SIsMember(key, value string) bool {
 		panic(err)
 	}
 	return result
-}
-func Sget(key, value string) {
-
 }
 func SMembers(key string) []string {
 	result, err := DBUtils.RDB.SMembers(ctx, User_like+key).Result()

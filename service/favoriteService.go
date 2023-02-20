@@ -4,7 +4,6 @@ import (
 	"SimpleDouyin/config"
 	"SimpleDouyin/dao"
 	"errors"
-	"fmt"
 	"strconv"
 	"time"
 )
@@ -41,10 +40,9 @@ func GetVedioLikeCount(vedioId string) int64 {
 返回值为int，点赞成功则为1，否则为0且报错
 */
 func Like(vedioId, userId string) int64 {
-	add := dao.SAdd(vedioId, userId)
-	fmt.Println(add)
-	//add2 := dao.SAdd(userId+"1", vedioId)
-	return add
+	add := dao.SAddVideoLike(vedioId, userId)
+	add2 := dao.SAddUserLike(userId, vedioId)
+	return add & add2
 }
 
 /**
@@ -52,8 +50,8 @@ func Like(vedioId, userId string) int64 {
 返回值为int，点赞成功则为1，否则为0且报错
 */
 func DislikeVedio(vedioId, userId string) int64 {
-	remove := dao.Sremove(vedioId, userId)
-	sremove := dao.Sremove(userId, vedioId)
+	remove := dao.SremoveVedioLike(vedioId, userId)
+	sremove := dao.SremoveUserLike(userId, vedioId)
 	return remove & sremove
 }
 
@@ -97,7 +95,7 @@ func SaveRedisDataToMySql() {
 测试用，为redis添加数据
 */
 func Add(vedioId, userId string) int64 {
-	result := dao.SAdd(vedioId, userId)
+	result := dao.SAddVideoLike(vedioId, userId)
 	return result
 }
 
@@ -105,6 +103,6 @@ func Add(vedioId, userId string) int64 {
 测试用，为redis添加数据
 */
 func AdduserId(userId, vedioId string) int64 {
-	add := dao.SAdd(userId, vedioId)
+	add := dao.SAddUserLike(userId, vedioId)
 	return add
 }
