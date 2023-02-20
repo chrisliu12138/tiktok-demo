@@ -4,6 +4,7 @@ import (
 	"SimpleDouyin/config"
 	"SimpleDouyin/dao"
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -12,8 +13,11 @@ import (
 返回当前用户的所有点赞视频列表
 */
 func GetVedioLikeList(userId string) []dao.Video {
-	var IdList []int64
 	members := dao.SMembers(userId)
+	IdList := make([]int64, len(members))
+	if members == nil {
+		return nil
+	}
 	for i, s := range members {
 		IdList[i], _ = strconv.ParseInt(s, 10, 64)
 	}
@@ -38,8 +42,9 @@ func GetVedioLikeCount(vedioId string) int64 {
 */
 func Like(vedioId, userId string) int64 {
 	add := dao.SAdd(vedioId, userId)
-	add2 := dao.SAdd(userId, vedioId)
-	return add & add2
+	fmt.Println(add)
+	//add2 := dao.SAdd(userId+"1", vedioId)
+	return add
 }
 
 /**

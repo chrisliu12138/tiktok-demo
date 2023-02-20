@@ -1,6 +1,8 @@
 package DBUtils
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -26,9 +28,15 @@ func InitMysqlTemplete() {
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: newLogger,
 	})
+	sqlDb, _ := DB.DB()
+	sqlDb.SetMaxOpenConns(100)
+	sqlDb.SetMaxIdleConns(20)
+
 	if err != nil {
 		log.Panic("err:", err.Error())
 	}
+	data, _ := json.Marshal(sqlDb.Stats()) //获得当前的SQL配置情况
+	fmt.Println(string(data))
 }
 
 func InitRedisTemplete() {

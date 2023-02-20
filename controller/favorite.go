@@ -39,13 +39,22 @@ func FavoriteAction(c *gin.Context) {
 // FavoriteList 返回用户的所有点赞过的视频
 func FavoriteList(c *gin.Context) {
 	userid := c.Query("userId")
-
 	Videoslist := service.GetVedioLikeList(userid)
-	c.JSON(http.StatusOK, VideoListResponse{
-		Response: dao.Response{
-			StatusCode: 0,
-			StatusMsg:  "操作成功",
-		},
-		VideoList: Videoslist,
-	})
+	if Videoslist == nil {
+		c.JSON(http.StatusOK, VideoListResponse{
+			Response: dao.Response{
+				StatusCode: 1,
+				StatusMsg:  "当前用户未点赞过视频",
+			},
+			VideoList: nil,
+		})
+	} else {
+		c.JSON(http.StatusOK, VideoListResponse{
+			Response: dao.Response{
+				StatusCode: 0,
+				StatusMsg:  "操作成功",
+			},
+			VideoList: Videoslist,
+		})
+	}
 }

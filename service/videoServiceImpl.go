@@ -2,7 +2,6 @@ package service
 
 import (
 	"SimpleDouyin/dao"
-	"fmt"
 )
 
 type VideoServiceImpl struct {
@@ -58,14 +57,13 @@ func (VideoServiceImpl *VideoServiceImpl) QueryAll() []dao.Video {
 func convertPOtoDTO(rows []dao.Result, len int) []dao.Video {
 	var videoList = make([]dao.Video, len)
 	for i := 0; i < len; i++ {
-		fmt.Println(rows[i])
 		var author dao.User
 		author = dao.User{
 			Id:            int64(rows[i].UserID),
 			Name:          rows[i].Name,
 			FollowCount:   int64(rows[i].FollowCount),
 			FollowerCount: int64(rows[i].FollowerCount),
-			IsFollow:      int(rows[i].IsFollow),
+			//IsFollow:      int(rows[i].IsFollow),
 		}
 		//封装author
 		videoList[i].Author = author

@@ -82,10 +82,9 @@ func QueryListByVedionl(videoArray []int64) []Result {
 	//rows := make([]*Result, 0)
 	var rows []Result
 	DBUtils.InitMysqlTemplete()
-	fmt.Println(DBUtils.DB)
 	result := DBUtils.DB.Model(&VideoEntity{}).
 		Select("video.id,video.title,video.play_url,video.cover_url,video.favorite_count,video.comment_count,video.is_favorite,video.create_time,video.user_id,user.name,user.follow_count,user.follower_count,user.bool").
-		Joins("left join user on user.id = video.user_id").Where(videoArray).Scan(&rows)
+		Joins("left join user on user.id = video.user_id").Where("video.id in ?", videoArray).Scan(&rows)
 
 	if result.Error != nil {
 		return nil //查询失败
@@ -108,6 +107,14 @@ func QueryAll() []Result {
 		return nil //查询失败
 	}
 	return rows
+}
+func Sqltest() {
+	var rows []Result
+
+	result := DBUtils.DB.Model(&Video{}).
+		Select("video.id,title,video.create_time,user.id").Joins("left join user on user.id = video.user_id").Order("video.create_time desc").Limit(30).Scan(&rows)
+	fmt.Println(result)
+
 }
 
 // 拿到当前的所有视频id，限制起止数

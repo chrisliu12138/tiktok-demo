@@ -41,7 +41,7 @@ func Sget(key, value string) {
 
 }
 func SMembers(key string) []string {
-	result, err := DBUtils.RDB.SMembers(ctx, key).Result()
+	result, err := DBUtils.RDB.SMembers(ctx, User_like+key).Result()
 	if err != nil {
 		panic(err)
 	}

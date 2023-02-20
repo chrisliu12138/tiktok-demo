@@ -59,3 +59,11 @@ func TestTimeClock(t *testing.T) {
 	result := dao.UpdateVedioLikeCount(2, 999) //true
 	fmt.Println(result)
 }
+
+func Test1(t *testing.T) {
+	DBUtils.Init()
+	//service.GetVedioLikeList("2")
+
+	members := dao.SMembers("2")
+	fmt.Println(members)
+}
