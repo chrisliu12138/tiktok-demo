@@ -35,7 +35,7 @@ func GetTableUserList() ([]TableUser, error) {
 // GetTableUserByUserName 根据username获得TableUser对象
 func GetTableUserByUserName(name string) (TableUser, error) {
 	tableUser := TableUser{}
-	err := DBUtils.DB.Where("name = ?", name).First(&tableUser).Error
+	err := DBUtils.DB.Where("username = ?", name).First(&tableUser).Error
 	if err != nil {
 		log.Println(err.Error())
 		return tableUser, err
