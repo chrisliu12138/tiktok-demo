@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -54,7 +55,8 @@ func GetVedioLikeCount(vedioId string) int64 {
 	return count
 }
 
-/**
+/*
+*
 点赞操作
 返回值为int，点赞成功则为1，否则为0且报错
 */
@@ -64,7 +66,8 @@ func Like(vedioId, userId string) int64 {
 	return add & add2
 }
 
-/**
+/*
+*
 取消点赞操作
 返回值为int，点赞成功则为1，否则为0且报错
 */
@@ -74,7 +77,7 @@ func DislikeVedio(vedioId, userId string) int64 {
 	return remove & sremove
 }
 
-//查询当前用户是否点赞
+// 查询当前用户是否点赞
 func LikeVedioOrNot(vedioId, userId string) bool {
 	member := dao.SIsMember(vedioId, userId)
 	return member
@@ -108,6 +111,25 @@ func SaveRedisDataToMySql() {
 			}
 		}
 	}
+}
+
+// TotalFavourite 根据userId获取这个用户总共被点赞数量
+func TotalFavourite(userId int64) (int64, error) {
+	//根据userId获取这个用户的发布视频列表信息
+	videoIdList := Query(userId)
+	var sum int64 //该用户的总被点赞数
+	//提前开辟空间,存取每个视频的点赞数
+	videoLikeCountList := new([]int64)
+	//采用协程并发将对应videoId的点赞数添加到集合中去
+	i := len(videoIdList)
+	var wg sync.WaitGroup
+	wg.Add(i)
+	wg.Wait()
+	//遍历累加，求总被点赞数
+	for _, count := range *videoLikeCountList {
+		sum += count
+	}
+	return sum, nil
 }
 
 /*
