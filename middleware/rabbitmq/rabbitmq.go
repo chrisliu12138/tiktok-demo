@@ -110,9 +110,9 @@ func (r *RabbitMQ) follow(msgs <-chan amqp.Delivery) {
 			//2、target_user的粉丝列表+1
 
 			//redis关注列表更新
-			if num, err := DBUtils.RdbFollow.SCard(DBUtils.Ctx, userIdStr).Result(); num != 0 && err == nil {
-				DBUtils.RdbFollow.SAdd(DBUtils.Ctx, userIdStr, toUserIdStr)
-				DBUtils.RdbFollow.Expire(DBUtils.Ctx, userIdStr, config.ExpireTime)
+			if num, err := DBUtils.RDB.SCard(DBUtils.Ctx, userIdStr).Result(); num != 0 && err == nil {
+				DBUtils.RDB.SAdd(DBUtils.Ctx, userIdStr, toUserIdStr)
+				DBUtils.RDB.Expire(DBUtils.Ctx, userIdStr, config.ExpireTime)
 			} else if err != nil {
 				log.Println("关注列表更新错误: ", err)
 				return
@@ -121,9 +121,9 @@ func (r *RabbitMQ) follow(msgs <-chan amqp.Delivery) {
 			}
 
 			//redis粉丝列表更新
-			if num, err := DBUtils.RdbFollower.SCard(DBUtils.Ctx, toUserIdStr).Result(); num != 0 && err == nil {
-				DBUtils.RdbFollower.SAdd(DBUtils.Ctx, toUserIdStr, userIdStr)
-				DBUtils.RdbFollower.Expire(DBUtils.Ctx, toUserIdStr, config.ExpireTime)
+			if num, err := DBUtils.RDB.SCard(DBUtils.Ctx, toUserIdStr).Result(); num != 0 && err == nil {
+				DBUtils.RDB.SAdd(DBUtils.Ctx, toUserIdStr, userIdStr)
+				DBUtils.RDB.Expire(DBUtils.Ctx, toUserIdStr, config.ExpireTime)
 			} else if err != nil {
 				log.Println("粉丝列表更新错误: ", err)
 				return
@@ -143,18 +143,18 @@ func (r *RabbitMQ) unfollow(msgs <-chan amqp.Delivery) {
 			toUserIdStr := params[1]
 
 			//redis关注列表更新
-			if num, err := DBUtils.RdbFollow.SCard(DBUtils.Ctx, userIdStr).Result(); num != 0 && err == nil {
-				DBUtils.RdbFollower.SRem(DBUtils.Ctx, userIdStr, toUserIdStr)
-				DBUtils.RdbFollower.Expire(DBUtils.Ctx, userIdStr, config.ExpireTime)
+			if num, err := DBUtils.RDB.SCard(DBUtils.Ctx, userIdStr).Result(); num != 0 && err == nil {
+				DBUtils.RDB.SRem(DBUtils.Ctx, userIdStr, toUserIdStr)
+				DBUtils.RDB.Expire(DBUtils.Ctx, userIdStr, config.ExpireTime)
 			} else if err != nil {
 				log.Println("关注列表更新错误: ", err)
 				return
 			}
 
 			//redis粉丝列表更新
-			if num, err := DBUtils.RdbFollower.SCard(DBUtils.Ctx, userIdStr).Result(); num != 0 && err == nil {
-				DBUtils.RdbFollower.SRem(DBUtils.Ctx, toUserIdStr, userIdStr)
-				DBUtils.RdbFollower.Expire(DBUtils.Ctx, toUserIdStr, config.ExpireTime)
+			if num, err := DBUtils.RDB.SCard(DBUtils.Ctx, userIdStr).Result(); num != 0 && err == nil {
+				DBUtils.RDB.SRem(DBUtils.Ctx, toUserIdStr, userIdStr)
+				DBUtils.RDB.Expire(DBUtils.Ctx, toUserIdStr, config.ExpireTime)
 			} else if err != nil {
 				log.Println("粉丝列表更新错误: ", err)
 				return

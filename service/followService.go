@@ -18,7 +18,7 @@ func Follow(userId, toUserid int64, actionType int64) (bool, error) {
 	var err error
 	switch {
 	case actionType == 1:
-		result, err = addFollow(userId, toUserid)
+		result, err = AddFollow(userId, toUserid)
 	case actionType == 2:
 		result, err = unfollow(userId, toUserid)
 	}
@@ -29,13 +29,13 @@ func Follow(userId, toUserid int64, actionType int64) (bool, error) {
 func FollowList(userId int64) ([]dao.User, error) {
 	//查询redis
 	userIdStr := strconv.FormatInt(userId, 10)
-	n, err := DBUtils.RdbFollow.SCard(DBUtils.Ctx, userIdStr).Result()
+	n, err := DBUtils.RDB.SCard(DBUtils.Ctx, userIdStr).Result()
 	if err != nil {
 		return nil, err
 	}
 	//redis中存在记录
 	if n > 0 {
-		followUsers, err := DBUtils.RdbFollow.SMembers(DBUtils.Ctx, userIdStr).Result()
+		followUsers, err := DBUtils.RDB.SMembers(DBUtils.Ctx, userIdStr).Result()
 		if err != nil {
 			return nil, err
 		}
@@ -43,7 +43,7 @@ func FollowList(userId int64) ([]dao.User, error) {
 	}
 	toUsers := make([]int, 0)
 	//从mysql中获取
-	if err := DBUtils.Db.Raw("select to_user_id from follow where user_id = ? and cancel = 0", userIdStr).Scan(&toUsers).Error; err != nil {
+	if err := DBUtils.DB.Raw("select to_user_id from follow where user_id = ? and cancel = 0", userIdStr).Scan(&toUsers).Error; err != nil {
 		return nil, err
 	}
 	go addFollowToRedis(userId, toUsers)
@@ -58,13 +58,13 @@ func FollowList(userId int64) ([]dao.User, error) {
 func FollowerList(userId int64) ([]dao.User, error) {
 	//查询redis
 	userIdStr := strconv.FormatInt(userId, 10)
-	n, err := DBUtils.RdbFollower.Exists(DBUtils.Ctx, userIdStr).Result()
+	n, err := DBUtils.RDB.Exists(DBUtils.Ctx, userIdStr).Result()
 	if err != nil {
 		return nil, err
 	}
 	//redis中存在记录
 	if n > 0 {
-		followerUsers, err := DBUtils.RdbFollower.SMembers(DBUtils.Ctx, userIdStr).Result()
+		followerUsers, err := DBUtils.RDB.SMembers(DBUtils.Ctx, userIdStr).Result()
 		if err != nil {
 			return nil, err
 		}
@@ -72,7 +72,7 @@ func FollowerList(userId int64) ([]dao.User, error) {
 	}
 	users := make([]int, 0)
 	//从mysql中获取
-	if err := DBUtils.Db.Raw("select user_id from follow where to_user_id = ?", userIdStr).Scan(&users).Error; err != nil {
+	if err := DBUtils.DB.Raw("select user_id from follow where to_user_id = ?", userIdStr).Scan(&users).Error; err != nil {
 		return nil, err
 	}
 	go addFollowerToRedis(userId, users)
@@ -89,18 +89,18 @@ func queryList(userId int64, list []string, follow bool) ([]dao.User, error) {
 	for _, user := range list {
 
 		var tmpUser dao.User
-		if err := DBUtils.Db.Raw("select id, name, follow_count, follower_count from users where id = ?", user).Scan(&tmpUser).Error; err != nil {
+		if err := DBUtils.DB.Raw("select id, name, follow_count, follower_count from users where id = ?", user).Scan(&tmpUser).Error; err != nil {
 			return nil, err
 		}
 
 		if follow {
-			if err := DBUtils.Db.Raw("select user_id from follow where user_id = ? and to_user_id = ? and cancel = 0", userId, user).Error; err == nil {
+			if err := DBUtils.DB.Raw("select user_id from follow where user_id = ? and to_user_id = ? and cancel = 0", userId, user).Error; err == nil {
 				tmpUser.IsFollow = 1
 			} else if gorm.IsRecordNotFoundError(err) {
 				log.Println("mysql查询错误: ", err)
 			}
 		} else {
-			if err := DBUtils.Db.Raw("select user_id from follow where user_id = ? and to_user_id = ? and cancel = 0", user, userId).Error; gorm.IsRecordNotFoundError(err) {
+			if err := DBUtils.DB.Raw("select user_id from follow where user_id = ? and to_user_id = ? and cancel = 0", user, userId).Error; gorm.IsRecordNotFoundError(err) {
 				tmpUser.IsFollow = 1
 			}
 		}
@@ -109,7 +109,7 @@ func queryList(userId int64, list []string, follow bool) ([]dao.User, error) {
 	return users, nil
 }
 
-func addFollow(userId, toUserId int64) (bool, error) {
+func AddFollow(userId, toUserId int64) (bool, error) {
 	//先更新mysql，mysql插入成功后再将redis更新的消息放入rabbitmq，防止mysql出现回滚后，redis中出现脏数据
 
 	userIdStr := strconv.FormatInt(userId, 10)
@@ -117,7 +117,7 @@ func addFollow(userId, toUserId int64) (bool, error) {
 
 	sql := fmt.Sprintf("CALL followAction(%v,%v)", userIdStr, toUserIdStr)
 	log.Printf("执行关注操作, SQL如下: %s", sql)
-	if err := DBUtils.Db.Raw(sql).Scan(nil).Error; nil != err {
+	if err := DBUtils.DB.Raw(sql).Scan(nil).Error; nil != err {
 		log.Println(err.Error())
 		return false, err
 	}
@@ -141,7 +141,7 @@ func unfollow(userId, toUserId int64) (bool, error) {
 
 	sql := fmt.Sprintf("CALL unfollowAction(%v,%v)", userId, toUserId)
 	log.Printf("执行取关操作, SQL如下: %s", sql)
-	if err := DBUtils.Db.Raw(sql).Scan(nil).Error; nil != err {
+	if err := DBUtils.DB.Raw(sql).Scan(nil).Error; nil != err {
 		log.Println(err.Error())
 		return false, err
 	}
@@ -160,7 +160,7 @@ func unfollow(userId, toUserId int64) (bool, error) {
 func GetFollowCnt(userId int64) (followCnt int64, err error) {
 	//查询redis
 	userIdStr := strconv.FormatInt(userId, 10)
-	followCnt, err = DBUtils.RdbFollow.SCard(DBUtils.Ctx, userIdStr).Result()
+	followCnt, err = DBUtils.RDB.SCard(DBUtils.Ctx, userIdStr).Result()
 	if err != nil {
 		log.Println("查询redis出错", err)
 		return followCnt, err
@@ -171,7 +171,7 @@ func GetFollowCnt(userId int64) (followCnt int64, err error) {
 	}
 	toUsers := make([]int, 0)
 	//从mysql中获取
-	if err := DBUtils.Db.Raw("select to_user_id from follow where user_id = ? and cancel = 0", userIdStr).Scan(&toUsers).Error; err != nil {
+	if err := DBUtils.DB.Raw("select to_user_id from follow where user_id = ? and cancel = 0", userIdStr).Scan(&toUsers).Error; err != nil {
 		log.Println("查询mysql出错", err)
 		return followCnt, err
 	}
@@ -183,7 +183,7 @@ func GetFollowCnt(userId int64) (followCnt int64, err error) {
 func GetFollowerCnt(userId int64) (followCnt int64, err error) {
 	//查询redis
 	userIdStr := strconv.FormatInt(userId, 10)
-	followCnt, err = DBUtils.RdbFollow.SCard(DBUtils.Ctx, userIdStr).Result()
+	followCnt, err = DBUtils.RDB.SCard(DBUtils.Ctx, userIdStr).Result()
 	if err != nil {
 		log.Println("查询redis出错", err)
 		return followCnt, err
@@ -194,7 +194,7 @@ func GetFollowerCnt(userId int64) (followCnt int64, err error) {
 	}
 	toUsers := make([]int, 0)
 	//从mysql中获取
-	if err := DBUtils.Db.Raw("select user_id from follow where to_user_id = ? and cancel = 0", userIdStr).Scan(&toUsers).Error; err != nil {
+	if err := DBUtils.DB.Raw("select user_id from follow where to_user_id = ? and cancel = 0", userIdStr).Scan(&toUsers).Error; err != nil {
 		log.Println("查询mysql出错", err)
 		return followCnt, err
 	}
@@ -207,8 +207,8 @@ func addFollowToRedis(userId int64, toUsers []int) {
 	userIdStr := strconv.FormatInt(userId, 10)
 	for i := 0; i < len(toUsers); i++ {
 		toUserIdStr := strconv.Itoa(toUsers[i])
-		DBUtils.RdbFollow.SRem(DBUtils.Ctx, userIdStr, toUserIdStr)
-		DBUtils.RdbFollow.Expire(DBUtils.Ctx, userIdStr, config.ExpireTime)
+		DBUtils.RDB.SRem(DBUtils.Ctx, userIdStr, toUserIdStr)
+		DBUtils.RDB.Expire(DBUtils.Ctx, userIdStr, config.ExpireTime)
 	}
 }
 
@@ -217,7 +217,7 @@ func addFollowerToRedis(userId int64, toUsers []int) {
 	userIdStr := strconv.FormatInt(userId, 10)
 	for i := 0; i < len(toUsers); i++ {
 		toUserIdStr := strconv.Itoa(toUsers[i])
-		DBUtils.RdbFollower.SRem(DBUtils.Ctx, toUserIdStr, userIdStr)
-		DBUtils.RdbFollower.Expire(DBUtils.Ctx, toUserIdStr, config.ExpireTime)
+		DBUtils.RDB.SRem(DBUtils.Ctx, toUserIdStr, userIdStr)
+		DBUtils.RDB.Expire(DBUtils.Ctx, toUserIdStr, config.ExpireTime)
 	}
 }

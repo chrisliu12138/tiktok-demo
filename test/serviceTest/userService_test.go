@@ -1,6 +1,7 @@
 package serviceTest
 
 import (
+	"SimpleDouyin/middleware/DBUtils"
 	"SimpleDouyin/service"
 	"fmt"
 	"testing"
@@ -13,8 +14,9 @@ func TestGetTableUserList(t *testing.T) {
 }
 
 func TestGetTableUserByUsername(t *testing.T) {
+	DBUtils.Init()
 	impl := service.UserServiceImpl{}
-	list := impl.GetTableUserByUsername("小野六花")
+	list := impl.GetTableUserByUsername("aaa")
 	fmt.Printf("%v", list)
 }
 
