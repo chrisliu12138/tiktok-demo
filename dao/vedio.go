@@ -65,7 +65,6 @@ func Query(userid uint) []Result {
 	//查询某个用户的所有视频
 	//rows := make([]*Result, 0)
 	var rows []Result
-	DBUtils.InitMysqlTemplete()
 	//连接数据库并查询
 	// SELECT * FROM `video` left join user on user.id = video.user_id where user_id = usrId;
 	result := DBUtils.DB.Model(&VideoEntity{}).

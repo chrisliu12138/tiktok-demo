@@ -4,6 +4,7 @@ import (
 	"SimpleDouyin/config"
 	"SimpleDouyin/dao"
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -28,7 +29,25 @@ func GetVedioLikeList(userId string) []dao.Video {
 }
 
 /*
-返回当前视频的点赞总数，视频不存在则返回0
+返回当前用户的获赞总数，不存在则返回0
+*/
+func GetUserLikeCount(userId string) int64 {
+	id, _ := strconv.ParseInt(userId, 10, 64)
+	impl := VideoServiceImpl{}
+	videos := impl.Query(id)
+	fmt.Println(videos)
+	count := int64(0)
+	for _, s := range videos {
+		id := strconv.Itoa(int(s.Id))
+		likeCount := GetVedioLikeCount(id)
+		fmt.Println(likeCount)
+		count += likeCount
+	}
+	return count
+}
+
+/*
+返回当前视频的点赞总数，视频不存在则返回0set GOOS=linux
 */
 func GetVedioLikeCount(vedioId string) int64 {
 	count := dao.SelectCount(vedioId)

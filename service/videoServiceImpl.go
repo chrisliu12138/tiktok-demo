@@ -2,6 +2,7 @@ package service
 
 import (
 	"SimpleDouyin/dao"
+	"fmt"
 )
 
 type VideoServiceImpl struct {
@@ -18,6 +19,7 @@ func (VideoServiceImpl *VideoServiceImpl) Query(userid int64) []dao.Video {
 	//1.根据用户id查询其所有Video
 	var videoList []dao.Video
 	rows := dao.Query(uint(userid))
+	fmt.Println(rows)
 	if rows != nil {
 		//2.查询成功则封装Response
 		videoList = convertPOtoDTO(rows, len(rows))

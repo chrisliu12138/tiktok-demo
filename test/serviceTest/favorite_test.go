@@ -5,10 +5,7 @@ import (
 	"SimpleDouyin/middleware/DBUtils"
 	"SimpleDouyin/service"
 	"fmt"
-	"math/rand"
-	"strconv"
 	"testing"
-	"time"
 )
 
 var name = []string{"1", "2", "3", "4"}
@@ -36,11 +33,9 @@ func TestGetVedioLikeList(t *testing.T) {
 
 func TestAdddata(t *testing.T) {
 	DBUtils.InitRedisTemplete()
-	rand.Seed(time.Now().UnixNano())
-	for i := 0; i < 10; i++ {
-		num := rand.Int63n(30)
-		service.AdduserId(strconv.Itoa(2), strconv.Itoa(int(num)))
-	}
+	service.Add("17", "26")
+	service.Add("17", "556")
+
 }
 
 func BenchmarkDislikeVedio(b *testing.B) {
@@ -62,8 +57,6 @@ func TestTimeClock(t *testing.T) {
 
 func Test1(t *testing.T) {
 	DBUtils.Init()
-	//service.GetVedioLikeList("2")
-
-	members := dao.SMembers("2")
-	fmt.Println(members)
+	count := service.GetUserLikeCount("3")
+	fmt.Println(count)
 }

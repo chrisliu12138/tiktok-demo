@@ -1,6 +1,7 @@
 package main
 
 import (
+	"SimpleDouyin/initUtil"
 	"SimpleDouyin/middleware/DBUtils"
 	"SimpleDouyin/service"
 	"github.com/gin-gonic/gin"
@@ -19,7 +20,7 @@ func main() {
 	//gin
 	r = gin.Default()
 
-	initRouter(r)
+	initUtil.InitRouter(r)
 
 	r.Run(":8081") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
