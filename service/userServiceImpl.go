@@ -6,16 +6,14 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"github.com/dgrijalva/jwt-go"
 	"log"
 	"strconv"
 	"time"
-
-	"github.com/dgrijalva/jwt-go"
 )
 
 type UserServiceImpl struct {
 	/*
-		TODO 待关注服务和点赞服务接口写完后添加
 		FollowService
 		LikeService
 	*/
@@ -68,7 +66,7 @@ func (userServiceImpl *UserServiceImpl) GetUserById(id int64) (dao.User, error) 
 		Name:          "",
 		FollowCount:   0,
 		FollowerCount: 0,
-		IsFollow:      0,
+		IsFollow:      false,
 	}
 	tableUser, err := dao.GetTableUserById(id)
 	if err != nil {
@@ -77,8 +75,28 @@ func (userServiceImpl *UserServiceImpl) GetUserById(id int64) (dao.User, error) 
 		return user, err
 	}
 	log.Println("User Query Success")
-	// TODO 等待点赞服务和关注服务写完后 通过接口获取对应信息存放到tableUser中 最后并赋值到user对象中
-	user.Name = tableUser.Name
+	followCnt, err := GetFollowCnt(id)
+	if err != nil {
+		log.Println("Err:", err.Error())
+	}
+	folloerCnt, err := GetFollowerCnt(id)
+	if err != nil {
+		log.Println("Err:", err.Error())
+	}
+	totalFavorited, err := TotalFavourite(id)
+	if err != nil {
+		log.Println("Err:", err.Error())
+	}
+	favoriteCnt := len(GetVedioLikeList(string(id)))
+	user = dao.User{
+		Id:             id,
+		Name:           tableUser.Name,
+		FollowCount:    followCnt,
+		FollowerCount:  folloerCnt,
+		IsFollow:       false,
+		TotalFavorited: totalFavorited,
+		FavoriteCount:  int64(favoriteCnt),
+	}
 	return user, nil
 }
 
@@ -89,7 +107,7 @@ func (userServiceImpl *UserServiceImpl) GetUserByIdWithCurId(id int64, curId int
 		Name:          "",
 		FollowCount:   0,
 		FollowerCount: 0,
-		IsFollow:      0, //数据库中存的 0：表示false 1 表示成功
+		IsFollow:      false, //数据库中存的 0：表示false 1 表示成功
 	}
 	tableUser, err := dao.GetTableUserById(id)
 	if err != nil {
@@ -98,8 +116,28 @@ func (userServiceImpl *UserServiceImpl) GetUserByIdWithCurId(id int64, curId int
 		return user, err
 	}
 	log.Println("User Query Success")
-	// TODO 等待点赞服务和关注服务写完后 通过接口获取对应信息存放到tableUser中 最后并赋值到user对象中
-	user.Name = tableUser.Name
+	followCnt, err := GetFollowCnt(id)
+	if err != nil {
+		log.Println("Err:", err.Error())
+	}
+	folloerCnt, err := GetFollowerCnt(id)
+	if err != nil {
+		log.Println("Err:", err.Error())
+	}
+	totalFavorited, err := TotalFavourite(id)
+	if err != nil {
+		log.Println("Err:", err.Error())
+	}
+	favoriteCnt := len(GetVedioLikeList(string(id)))
+	user = dao.User{
+		Id:             id,
+		Name:           tableUser.Name,
+		FollowCount:    followCnt,
+		FollowerCount:  folloerCnt,
+		IsFollow:       false,
+		TotalFavorited: totalFavorited,
+		FavoriteCount:  int64(favoriteCnt),
+	}
 	return user, nil
 }
 
