@@ -42,7 +42,7 @@ func (*FollowDao) GetFollowingCnt(userId int64) (int64, error) {
 	// 用于存储当前用户关注了多少人。
 	var cnt int64
 	// 查询出错，日志打印err msg，并return err
-	if err := DBUtils.Db.Model(Follow{}).
+	if err := DBUtils.DB.Model(Follow{}).
 		Where("follower_id = ?", userId).
 		Where("cancel = ?", 0).
 		Count(&cnt).Error; nil != err {

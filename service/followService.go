@@ -95,13 +95,13 @@ func queryList(userId int64, list []string, follow bool) ([]dao.User, error) {
 
 		if follow {
 			if err := DBUtils.DB.Raw("select user_id from follow where user_id = ? and to_user_id = ? and cancel = 0", userId, user).Error; err == nil {
-				tmpUser.IsFollow = 1
+				tmpUser.IsFollow = true
 			} else if gorm.IsRecordNotFoundError(err) {
 				log.Println("mysql查询错误: ", err)
 			}
 		} else {
 			if err := DBUtils.DB.Raw("select user_id from follow where user_id = ? and to_user_id = ? and cancel = 0", user, userId).Error; gorm.IsRecordNotFoundError(err) {
-				tmpUser.IsFollow = 1
+				tmpUser.IsFollow = false
 			}
 		}
 		users = append(users, tmpUser)

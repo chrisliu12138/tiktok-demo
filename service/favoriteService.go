@@ -116,7 +116,8 @@ func SaveRedisDataToMySql() {
 // TotalFavourite 根据userId获取这个用户总共被点赞数量
 func TotalFavourite(userId int64) (int64, error) {
 	//根据userId获取这个用户的发布视频列表信息
-	videoIdList := Query(userId)
+	impl := VideoServiceImpl{}
+	videoIdList := impl.Query(userId)
 	var sum int64 //该用户的总被点赞数
 	//提前开辟空间,存取每个视频的点赞数
 	videoLikeCountList := new([]int64)

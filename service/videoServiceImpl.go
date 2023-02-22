@@ -15,7 +15,7 @@ func (VideoServiceImpl *VideoServiceImpl) Add(userId int, playUrl string, title 
 }
 
 // 根据userID查询稿件
-func Query(userid int64) []dao.Video {
+func (VideoServiceImpl *VideoServiceImpl) Query(userid int64) []dao.Video {
 	//1.根据用户id查询其所有Video
 	var videoList []dao.Video
 	rows := dao.Query(uint(userid))
