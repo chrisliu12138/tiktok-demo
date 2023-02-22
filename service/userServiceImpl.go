@@ -83,10 +83,7 @@ func (userServiceImpl *UserServiceImpl) GetUserById(id int64) (dao.User, error) 
 	if err != nil {
 		log.Println("Err:", err.Error())
 	}
-	totalFavorited, err := TotalFavourite(id)
-	if err != nil {
-		log.Println("Err:", err.Error())
-	}
+	totalFavorited := GetUserLikeCount(string(id))
 	favoriteCnt := len(GetVedioLikeList(string(id)))
 	user = dao.User{
 		Id:             id,
