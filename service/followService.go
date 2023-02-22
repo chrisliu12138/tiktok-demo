@@ -18,7 +18,7 @@ func Follow(userId, toUserid int64, actionType int64) (bool, error) {
 	var err error
 	switch {
 	case actionType == 1:
-		result, err = addFollow(userId, toUserid)
+		result, err = AddFollow(userId, toUserid)
 	case actionType == 2:
 		result, err = unfollow(userId, toUserid)
 	}
@@ -109,7 +109,7 @@ func queryList(userId int64, list []string, follow bool) ([]dao.User, error) {
 	return users, nil
 }
 
-func addFollow(userId, toUserId int64) (bool, error) {
+func AddFollow(userId, toUserId int64) (bool, error) {
 	//先更新mysql，mysql插入成功后再将redis更新的消息放入rabbitmq，防止mysql出现回滚后，redis中出现脏数据
 
 	userIdStr := strconv.FormatInt(userId, 10)

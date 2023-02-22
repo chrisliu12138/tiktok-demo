@@ -94,3 +94,23 @@ func TestFollowerList(t *testing.T) {
 	err = rabbitmq.FollowRmq.Close()
 	assert.NoError(t, err)
 }
+func TestAddFollow(t *testing.T) {
+	var err error
+	//先打开redis、rabbitmq、mysql
+	DBUtils.Init()
+	assert.NoError(t, err)
+
+	err = rabbitmq.InitRabbitMQ()
+	assert.NoError(t, err)
+
+	assert.NoError(t, err)
+	follow, err := service.AddFollow(1, 2)
+	if err != nil {
+		t.Error("测试失败")
+	}
+	if follow == false {
+		t.Error("添加失败")
+	}
+	t.Logf("添加成功")
+
+}
