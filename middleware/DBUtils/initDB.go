@@ -1,6 +1,7 @@
 package DBUtils
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis/v8"
@@ -15,7 +16,10 @@ import (
 var DB *gorm.DB
 var RDB *redis.Client
 
+var Ctx = context.Background()
+
 func InitMysqlTemplete() {
+
 	newLogger := logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), //io writer
 		logger.Config{
 			SlowThreshold: time.Second,  //慢SQL阈值
@@ -29,14 +33,15 @@ func InitMysqlTemplete() {
 		Logger: newLogger,
 	})
 	sqlDb, _ := DB.DB()
-	sqlDb.SetMaxOpenConns(100)
-	sqlDb.SetMaxIdleConns(20)
+	sqlDb.SetMaxOpenConns(200)
+	sqlDb.SetMaxIdleConns(30)
 
 	if err != nil {
 		log.Panic("err:", err.Error())
 	}
 	data, _ := json.Marshal(sqlDb.Stats()) //获得当前的SQL配置情况
 	fmt.Println(string(data))
+
 }
 
 func InitRedisTemplete() {
@@ -51,4 +56,5 @@ func InitRedisTemplete() {
 func Init() {
 	InitRedisTemplete()
 	InitMysqlTemplete()
+
 }

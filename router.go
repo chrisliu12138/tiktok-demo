@@ -22,13 +22,13 @@ func initRouter(r *gin.Engine) {
 	apiRouter.GET("/publish/list/", controller.PublishList)
 
 	// extra apis - I
-	apiRouter.POST("/favorite/action/", controller.FavoriteAction)
-	apiRouter.GET("/favorite/list/", controller.FavoriteList)
+	apiRouter.POST("/favorite/action/", jwt.Auth(), controller.FavoriteAction)
+	apiRouter.GET("/favorite/list/", jwt.Auth(), controller.FavoriteList)
 	apiRouter.POST("/comment/action/", jwt.Auth(), controller.CommentAction)
 	apiRouter.GET("/comment/list/", jwt.AuthWithoutLogin(), controller.CommentList)
 
 	// extra apis - II
-	apiRouter.POST("/relation/action/", jwt.Auth(), controller.RelationAction)
+	apiRouter.GET("/relation/action/", jwt.Auth(), controller.RelationAction)
 	apiRouter.GET("/relation/follow/list/", jwt.Auth(), controller.FollowList)
 	apiRouter.GET("/relation/follower/list/", jwt.Auth(), controller.FollowerList)
 	apiRouter.GET("/relation/friend/list/", jwt.Auth(), controller.FriendList)

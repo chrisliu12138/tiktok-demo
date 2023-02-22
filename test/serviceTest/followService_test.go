@@ -14,13 +14,12 @@ import (
 func TestFollow(t *testing.T) {
 	var err error
 	//先打开redis、rabbitmq、mysql
-	err = DBUtils.InitRedis()
+	DBUtils.Init()
 	assert.NoError(t, err)
 
 	err = rabbitmq.InitRabbitMQ()
 	assert.NoError(t, err)
 
-	err = DBUtils.InitDB()
 	assert.NoError(t, err)
 
 	//关注
@@ -43,13 +42,12 @@ func TestFollow(t *testing.T) {
 func TestFollowList(t *testing.T) {
 	var err error
 	//先打开redis、rabbitmq、mysql
-	err = DBUtils.InitRedis()
+	DBUtils.Init()
 	assert.NoError(t, err)
 
 	err = rabbitmq.InitRabbitMQ()
 	assert.NoError(t, err)
 
-	err = DBUtils.InitDB()
 	assert.NoError(t, err)
 
 	//关注,确保数据库中至少有一条记录
@@ -72,13 +70,12 @@ func TestFollowList(t *testing.T) {
 func TestFollowerList(t *testing.T) {
 	var err error
 	//先打开redis、rabbitmq、mysql
-	err = DBUtils.InitRedis()
+	DBUtils.Init()
 	assert.NoError(t, err)
 
 	err = rabbitmq.InitRabbitMQ()
 	assert.NoError(t, err)
 
-	err = DBUtils.InitDB()
 	assert.NoError(t, err)
 
 	//关注,确保数据库中至少有一条记录
