@@ -20,7 +20,7 @@ type Response struct {
 func Auth() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		//auth := context.Request.Header.Get("Authorization")
-		auth := context.Query("token")
+		auth := context.PostForm("token")
 		if len(auth) == 0 {
 			context.Abort()
 			context.JSON(http.StatusUnauthorized, Response{
