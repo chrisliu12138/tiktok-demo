@@ -81,7 +81,7 @@ func Publish(c *gin.Context) {
 func PublishList(c *gin.Context) {
 	//1.获取登录用户
 
-	userId, err := strconv.ParseInt(c.Query("userId"), 10, 64)
+	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
 		panic("字符型转整型失败")
 	}
