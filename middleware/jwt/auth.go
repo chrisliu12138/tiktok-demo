@@ -53,7 +53,7 @@ func AuthWithoutLogin() gin.HandlerFunc {
 		if len(auth) == 0 {
 			userId = "0"
 		} else {
-			auth = strings.Fields(auth)[1]
+			auth = strings.Fields(auth)[0]
 			token, err := parseToken(auth)
 			if err != nil {
 				context.Abort()
