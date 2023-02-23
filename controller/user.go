@@ -82,7 +82,7 @@ func Login(c *gin.Context) {
 
 // UserInfo GET /douyin/user/ 用户信息
 func UserInfo(c *gin.Context) {
-	userId := c.Query("user_id")
+	userId, _ := c.GetQuery("user_id")
 	id, _ := strconv.ParseInt(userId, 10, 64)
 
 	userServiceImpl := service.UserServiceImpl{}

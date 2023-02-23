@@ -28,7 +28,7 @@ func Auth() gin.HandlerFunc {
 				StatusMsg:  "Unauthorized",
 			})
 		}
-		auth = strings.Fields(auth)[1]
+		auth = strings.Fields(auth)[0]
 		token, err := parseToken(auth)
 		if err != nil {
 			context.Abort()
