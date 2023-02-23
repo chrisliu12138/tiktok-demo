@@ -42,7 +42,7 @@ func Publish(c *gin.Context) {
 		panic("根据userName查询用户失败")
 	}
 	//获取token的用户
-	finalName := fmt.Sprintf("%d_%s", user.Id, filename) //存的文件名字bear1.mp4
+	finalName := fmt.Sprintf("%d_%s", user.Id, filename) //存的文件名字bear.mp4
 	//savFile public\1_bear1.mp4   finalName:1_bear1.mp4
 	var saveFile = filepath.Join("./public/", finalName) //文件路径
 	//存到本地
@@ -54,9 +54,9 @@ func Publish(c *gin.Context) {
 		return
 	}
 	//将本地视频上传到服务器
-	ftp.Ftp(saveFile)
+	ftp.Ftp(saveFile, finalName)
 	//截图
-	ffmpeg.Ffmpeg(filename, "output")
+	ffmpeg.Ffmpeg(finalName, finalName+"-output")
 	//给video表添加一条记录，包括title  playUrl uerId等
 	impl := service.VideoServiceImpl{}
 	var flag = impl.Add(user.Id, "/ftpfile/"+filename, "test")

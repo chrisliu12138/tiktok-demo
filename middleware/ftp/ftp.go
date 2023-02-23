@@ -7,7 +7,7 @@ import (
 )
 
 // 相对路径
-func Ftp(pathfile string) {
+func Ftp(pathfile string, toVideoName string) {
 	// 连接到 FTP 服务器
 	conn, err := ftp.Dial("192.168.111.132:21")
 	// ftp.example.com:21是一个模拟的FTP服务器地址，实际使用中需要替换成真正的FTP服务器的地址。
@@ -33,7 +33,8 @@ func Ftp(pathfile string) {
 	defer file.Close()
 	fmt.Println(file.Name())
 	// 上传文件到 FTP 服务器（文件名）
-	if err := conn.Stor("bear.mp4", file); err != nil {
+	if err := conn.Stor(toVideoName, file); err != nil {
+
 		fmt.Println("Error uploading file:", err)
 		return
 	}
