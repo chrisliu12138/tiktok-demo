@@ -1,13 +1,12 @@
 package controller
 
 import (
+	"SimpleDouyin/dao"
+	"SimpleDouyin/service"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"strconv"
-
-	"SimpleDouyin/dao"
-
-	"github.com/gin-gonic/gin"
 )
 
 type CommentListResponse struct {
@@ -23,11 +22,8 @@ type CommentActionResponse struct {
 // CommentAction 新增/删除评论
 func CommentAction(c *gin.Context) {
 	//从上下文中获取执行当前操作的用户的id
-	id, ok := getId(c)
-	if !ok {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "获取用户id失败，请重试"})
-		return
-	}
+	id := c.Query("user_id")
+	userid, _ := strconv.ParseInt(id, 10, 64)
 
 	//获取执行操作的视频id
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
@@ -42,16 +38,17 @@ func CommentAction(c *gin.Context) {
 
 	if actionType == "1" { //增加评论
 		commentText := c.Query("comment_text")
-		comment, err := service.Comment(videoId, id, commentText)
+		comment, err := service.Comment(videoId, userid, commentText)
 		if err != nil {
 			c.JSON(http.StatusOK, CommentActionResponse{
-				Response: Response{StatusCode: 1, StatusMsg: "评论异常"},
+				dao.Response{StatusCode: 1, StatusMsg: "评论异常"},
+				dao.Comment{},
 			})
 			return
 		} else {
 			c.JSON(http.StatusOK, CommentActionResponse{
-				Response: Response{StatusCode: 0},
-				Comment:  comment,
+				dao.Response{StatusCode: 0, StatusMsg: "评论成功"},
+				comment,
 			})
 			return
 		}
@@ -65,12 +62,14 @@ func CommentAction(c *gin.Context) {
 		err = service.DeleteComment(commentId)
 		if err != nil {
 			c.JSON(http.StatusOK, CommentActionResponse{
-				Response: Response{StatusCode: 1, StatusMsg: "删除评论异常"},
+				dao.Response{StatusCode: 1, StatusMsg: "评论异常"},
+				dao.Comment{},
 			})
 			return
 		} else {
 			c.JSON(http.StatusOK, CommentActionResponse{
-				Response: Response{StatusCode: 0},
+				dao.Response{StatusCode: 0, StatusMsg: "success"},
+				dao.Comment{},
 			})
 		}
 	}
@@ -88,10 +87,10 @@ func CommentList(c *gin.Context) {
 	}
 
 	//获取commentList
-	commentList, err := service.CommentList(targetId)
+	commentList, err := service.GetCommentList(videoId)
 	if err != nil {
 		c.JSON(http.StatusOK, CommentListResponse{
-			Response: Response{
+			Response: dao.Response{
 				StatusCode: 1,
 				StatusMsg:  err.Error(),
 			},
@@ -101,7 +100,7 @@ func CommentList(c *gin.Context) {
 
 	//返回commentList
 	c.JSON(http.StatusOK, CommentListResponse{
-		Response:    Response{StatusCode: 0},
+		Response:    dao.Response{StatusCode: 0},
 		CommentList: commentList,
 	})
 }

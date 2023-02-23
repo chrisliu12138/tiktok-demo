@@ -103,7 +103,6 @@ func TestAddFollow(t *testing.T) {
 	err = rabbitmq.InitRabbitMQ()
 	assert.NoError(t, err)
 
-	assert.NoError(t, err)
 	follow, err := service.AddFollow(1, 2)
 	if err != nil {
 		t.Error("测试失败")
