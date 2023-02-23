@@ -56,8 +56,8 @@ func Register(c *gin.Context) {
 
 // Login POST /douyin/user/login/ 用户登录
 func Login(c *gin.Context) {
-	username := c.Query("username")
-	password := c.Query("password")
+	username := c.PostForm("username")
+	password := c.PostForm("password")
 	encoderPassword := service.EnCoder(password)
 	log.Println("EncoderPassword is ", encoderPassword)
 
@@ -82,7 +82,7 @@ func Login(c *gin.Context) {
 
 // UserInfo GET /douyin/user/ 用户信息
 func UserInfo(c *gin.Context) {
-	userId, _ := c.GetQuery("user_id")
+	userId := c.PostForm("user_id")
 	id, _ := strconv.ParseInt(userId, 10, 64)
 
 	userServiceImpl := service.UserServiceImpl{}

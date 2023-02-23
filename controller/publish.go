@@ -31,14 +31,13 @@ func Publish(c *gin.Context) {
 	}
 
 	filename := filepath.Base(data.Filename)
-	//获取登录用户
-
-	userName := c.PostForm("token")
 	if err != nil {
 		panic("获取用户名失败")
 	}
-
-	user, err := dao.GetTableUserByUserName(userName)
+	//根据token获取userName
+	userId := c.GetString("userId")
+	Id, err := strconv.ParseInt(userId, 10, 64)
+	user, err := dao.GetTableUserById(Id)
 	if err != nil {
 		panic("根据userName查询用户失败")
 	}
@@ -60,7 +59,7 @@ func Publish(c *gin.Context) {
 	ffmpeg.Ffmpeg(filename, "output")
 	//给video表添加一条记录，包括title  playUrl uerId等
 	impl := service.VideoServiceImpl{}
-	var flag = impl.Add(user.Id, saveFile, "test")
+	var flag = impl.Add(user.Id, "/ftpfile/"+filename, "test")
 	fmt.Println(flag)
 
 	if flag == true {
