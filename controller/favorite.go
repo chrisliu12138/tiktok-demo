@@ -3,7 +3,6 @@ package controller
 import (
 	"SimpleDouyin/dao"
 	"SimpleDouyin/service"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,13 +10,14 @@ import (
 // FavoriteAction no practical effect, just check if token is valid
 
 func FavoriteAction(c *gin.Context) {
-	userid := c.Query("userId")
+	userid, exists := c.Get("userId")
+	if !exists {
+		c.JSON(http.StatusOK, dao.Response{StatusCode: 2, StatusMsg: "绑定用户名错误"})
+	}
 	vedioId := c.Query("video_id")
 	action_type := c.Query("action_type")
-
-	fmt.Println(userid)
-	fmt.Println(vedioId)
-
+	id := ""
+	id = userid.(string)
 	//ip限流，查询当前ip是否超过设置的访问次数
 	ip := c.ClientIP()
 	islimitIP := dao.LimitIP(ip, vedioId)
@@ -28,15 +28,15 @@ func FavoriteAction(c *gin.Context) {
 	like := 0
 	if userid != "" && vedioId != "" {
 		if action_type == "1" {
-			like = int(service.Like(userid, vedioId))
+			like = int(service.Like(id, vedioId))
 		} else {
-			like = int(service.DislikeVedio(userid, vedioId))
+			like = int(service.DislikeVedio(id, vedioId))
 		}
 	}
 	if like == 1 {
-		c.JSON(http.StatusOK, dao.Response{StatusCode: 0})
+		c.JSON(http.StatusOK, dao.Response{StatusCode: 0, StatusMsg: "操作成功"})
 	} else {
-		c.JSON(http.StatusOK, dao.Response{StatusCode: 1, StatusMsg: "点赞失败"})
+		c.JSON(http.StatusInternalServerError, dao.Response{StatusCode: 1, StatusMsg: "点赞失败"})
 	}
 }
 
