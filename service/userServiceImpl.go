@@ -162,14 +162,10 @@ func NewToken(user dao.TableUser) string {
 	var jwtSecret = []byte(config.SECRET)
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenClaims.SignedString(jwtSecret)
-	if err == nil {
-		token = "Bobochang" + token
-		log.Println("Generate token success!")
-		return token
-	} else {
-		log.Println("Generate token fail")
-		return "fail"
+	if err != nil {
+		return ""
 	}
+	return token
 }
 
 // EnCoder 密码加密
