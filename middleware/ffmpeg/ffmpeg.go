@@ -64,6 +64,7 @@ func dispatcher() {
 
 // Ffmpeg 通过远程调用ffmpeg命令来创建视频截图
 func Ffmpeg(videoName string, imageName string) error {
+	InitSSH()
 	session, err := ClientSSH.NewSession()
 	if err != nil {
 		log.Fatal("创建ssh session 失败", err)
@@ -71,7 +72,7 @@ func Ffmpeg(videoName string, imageName string) error {
 	defer session.Close()
 	//执行远程命令 ffmpeg -ss 00:00:01 -i /home/ftpuser/video/1.mp4 -vframes 1 /home/ftpuser/images/4.jpg
 	//combo, err := session.CombinedOutput("ls;/usr/local/ffmpeg/bin/ffmpeg -ss 00:00:01 -i /home/ftpuser/video/" + videoName + ".mp4 -vframes 1 /home/ftpuser/images/" + imageName + ".jpg")
-	combo, err := session.CombinedOutput("ls;/usr/local/ffmpeg/bin/ffmpeg -i /ftpfile/" + videoName + ".mp4 -r 1 -q:v 2 -f image2 /ftpfile/" + imageName + ".jpeg")
+	combo, err := session.CombinedOutput("ls;/usr/local/ffmpeg/bin/ffmpeg -i /ftpfile/" + videoName + " -r 1 -q:v 2 -f image2 /ftpfile/" + imageName + "-%d.jpeg")
 
 	if err != nil {
 		//log.Fatal("远程执行cmd 失败", err)
