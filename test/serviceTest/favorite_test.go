@@ -57,6 +57,5 @@ func TestTimeClock(t *testing.T) {
 
 func Test1(t *testing.T) {
 	DBUtils.Init()
-	count, _ := service.TotalFavourite(3)
-	fmt.Println(count)
+
 }

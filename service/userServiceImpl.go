@@ -121,7 +121,7 @@ func (userServiceImpl *UserServiceImpl) GetUserByIdWithCurId(id int64, curId int
 	if err != nil {
 		log.Println("Err:", err.Error())
 	}
-	totalFavorited, err := TotalFavourite(id)
+	totalFavorited := GetUserLikeCount(string(id))
 	if err != nil {
 		log.Println("Err:", err.Error())
 	}
