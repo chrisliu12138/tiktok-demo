@@ -8,11 +8,20 @@
 go build && ./simple-demo
 ```
 
-```markdown
+```java
 项目代码结构：
 
---config 系统配置类 --controller 控制层 --dao dao层 --initUtil 初始化工具类 --middleware 中间件 --public 视频存放文件夹 --service service层 --test
-测试类 --serviceTest 服务测试类 main.go 启动类 README.md 说明文档
+--config        系统配置类
+--controller    控制层
+--dao           dao层
+--initUtil      初始化工具类
+--middleware    中间件
+--public        视频存放文件夹
+--service       service层
+--test          测试类
+  --serviceTest 服务测试类
+main.go         启动类
+README.md       说明文档
 ```
 
 #### 3.1.1 场景分析
